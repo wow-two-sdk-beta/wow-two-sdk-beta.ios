@@ -31,4 +31,7 @@
 | `os.Logger` call sites (`ShootModel`, `DuoSession`) | adopt `Log` | Pose Coach's adoption pass |
 
 - Pose Coach has no theme module and no API client: the theme and `ApiClient` are new ground, not extractions.
+- Pose Coach pins `0.0.2` since 2026-11-10: its brand theme and Settings screen use the sdk; its buttons, cards,
+  empty states and `os.Logger` call sites still wait for the adoption pass.
+- That first adoption added `wow2Theme(_:tintsControls:)` and the one-line row title; both shipped in `0.0.2`.
 - Product modules move only after Pose Coach adopts the foundations; the brief for `0.0.1` kept them out.
