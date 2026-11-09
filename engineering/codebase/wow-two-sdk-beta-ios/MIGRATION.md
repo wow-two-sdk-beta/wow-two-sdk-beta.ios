@@ -1,9 +1,31 @@
 # WoW2SdkBetaIos migration
 
-*Last updated: 2026-11-09*
+*Last updated: 2026-11-10*
 
 Consumer-facing changes per tagged version, newest first. Pin `exact:`; every tag may break, and its entry here says
 how to move.
+
+## 0.0.2 — second component batch
+
+Additive: no call site written against `0.0.1` changes. Pin `exact: "0.0.2"`.
+
+| Area | Added |
+|---|---|
+| `WoW2IosTheme` | `sizes.avatarSmall` · `avatarMedium` · `avatarLarge` · `avatarExtraLarge` (32 · 40 · 56 · 80); `motion.indeterminate` (1.4 s). Both inits keep defaults for the new members. [Spec](src/theme/Theme.spec.md) |
+| `actions` | `SegmentedControl` + `SegmentedControlAppearance`. [Spec](src/presentation/actions/segmentedControl/SegmentedControl.spec.md) |
+| `display` | `Badge` (`BadgeTone` × `BadgeVariant` soft · solid · outline, `showsDot` status pill), `Avatar` (image, URL or initials). Specs beside each |
+| `feedback` | `Banner` (`BannerTone`, title, message, action, dismiss), `ProgressBar` (determinate and indeterminate). Specs beside each |
+| `forms` | `SelectField` + `SelectOption` (shared with `SegmentedControl`). [Spec](src/presentation/forms/selectField/SelectField.spec.md) |
+| `ListGroup` | `separator: .inset` starts the hairlines at the row titles; `.full` stays the default |
+| Titles | A verbatim `String` overload beside every `LocalizedStringKey` init: `ListGroup`, `ListGroupItem`, `SwitchField`, `TextInput`, `SheetHeader`, `EmptyState`, `SectionHeader`, `ActionButton`, `ButtonLabel`. The title takes any `StringProtocol`, optional texts `String?` |
+
+| Changed signature | Before → after |
+|---|---|
+| `ListGroup.init` | gains `separator: ListGroupSeparator = .full` before `content` |
+| `ThemeSizes.init`, `ThemeMotion.init` | gain trailing defaulted parameters |
+
+- A string literal still picks the `LocalizedStringKey` init; a `String` variable now compiles and renders as is, so `Text(verbatim:)` wrappers in app code can go.
+- `Toast` / `ToastCenter` already took `String`; unchanged.
 
 ## 0.0.1 — foundations and themed components
 

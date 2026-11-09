@@ -1,6 +1,6 @@
 # wow-two-sdk-beta.ios — Backlog
 
-*Last updated: 2026-11-09*
+*Last updated: 2026-11-10*
 
 Every unbuilt item, grouped; top of each group = next. Shipped work lives in [`version-track/`](version-track/).
 
@@ -9,7 +9,7 @@ Every unbuilt item, grouped; top of each group = next. Shipped work lives in [`v
 | Feature | State | Spec |
 |---|---|---|
 | Theme tokens | shipped v0.1 | [Theme.spec.md](../codebase/wow-two-sdk-beta-ios/src/theme/Theme.spec.md) |
-| Themed components | shipped v0.1 | specs beside each family in `src/presentation/` |
+| Themed components | shipped v0.1 (batch II in `0.0.2`) | specs beside each family in `src/presentation/` |
 | API client | shipped v0.1 | [ApiClient.spec.md](../codebase/wow-two-sdk-beta-ios/src/foundation/http/ApiClient.spec.md) |
 | Build config | shipped v0.1 | [AppConfig.spec.md](../codebase/wow-two-sdk-beta-ios/src/foundation/config/AppConfig.spec.md) |
 | Logging | shipped v0.1 | [Log.spec.md](../codebase/wow-two-sdk-beta-ios/src/foundation/logger/Log.spec.md) |
@@ -35,13 +35,8 @@ Every unbuilt item, grouped; top of each group = next. Shipped work lives in [`v
 
 | Item | Type | Notes |
 |---|---|---|
-| Badge and status pill | feature | the fe sdk's `Badge` |
-| Banner and inline alert | feature | the fe sdk's `Alert` / `Callout` |
-| Progress bar | feature | the fe sdk's `ProgressBar` |
-| Segmented picker | feature | a style on the native `Picker` |
-| Avatar | feature | initials fallback |
-| `String` overloads for titles | feature | titles take `LocalizedStringKey` only |
-| Inset separators in `ListGroup` | feature | the hairline-gap separators span the full width |
+| Confirm dialog | feature | the fe sdk's `confirmPopover` / `typedConfirmModal`; a themed `confirmationDialog` |
+| Render-friendly `SelectField` | engineering | `ImageRenderer` draws the native `Menu` blank, so the gallery shows a placeholder row |
 
 ## Extractions
 

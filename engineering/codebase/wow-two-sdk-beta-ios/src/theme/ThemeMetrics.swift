@@ -73,19 +73,32 @@ public struct ThemeSizes: Sendable, Hashable {
     public var hairline: CGFloat
     /// The focus ring.
     public var ring: CGFloat
+    /// Avatar sides — the fe sdk's `Avatar` `sm` · `md` · `lg` · `2xl`.
+    public var avatarSmall: CGFloat
+    public var avatarMedium: CGFloat
+    public var avatarLarge: CGFloat
+    public var avatarExtraLarge: CGFloat
 
     public init(
         controlSmall: CGFloat = 32,
         controlMedium: CGFloat = 44,
         controlLarge: CGFloat = 52,
         hairline: CGFloat = 1,
-        ring: CGFloat = 2
+        ring: CGFloat = 2,
+        avatarSmall: CGFloat = 32,
+        avatarMedium: CGFloat = 40,
+        avatarLarge: CGFloat = 56,
+        avatarExtraLarge: CGFloat = 80
     ) {
         self.controlSmall = controlSmall
         self.controlMedium = controlMedium
         self.controlLarge = controlLarge
         self.hairline = hairline
         self.ring = ring
+        self.avatarSmall = avatarSmall
+        self.avatarMedium = avatarMedium
+        self.avatarLarge = avatarLarge
+        self.avatarExtraLarge = avatarExtraLarge
     }
 
     public static let standard = ThemeSizes()

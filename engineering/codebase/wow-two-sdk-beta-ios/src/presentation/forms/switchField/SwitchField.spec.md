@@ -9,6 +9,7 @@ Source: [SwitchField.swift](SwitchField.swift). Public import: `import WoW2IosPr
 - The row is one native `Toggle`: VoiceOver reads title, description and state as one control.
 - `ThemeToggleStyle` keeps the native switch, tinted with `primary.base`, label in the label role.
 - The row paints the card fill, so it sits in a `ListGroup` with separators.
+- Every `LocalizedStringKey` init has a verbatim twin: the title takes any `StringProtocol`, optional texts take `String?`, and no localization lookup runs — for strings an app resolves itself.
 
 ## `SwitchField`
 

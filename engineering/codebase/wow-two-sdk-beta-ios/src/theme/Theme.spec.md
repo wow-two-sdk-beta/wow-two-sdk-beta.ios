@@ -25,9 +25,9 @@ Public import: `import WoW2IosTheme` (or `WoW2Ios`).
 | `typography` | `display` `title` `heading` `body` `label` `caption` `eyebrow` `mono` | `Heading` · `Text` · `LabelText` · `EyebrowText` · `CodeText` |
 | `spacing` | `unit` × `xxs` 0.5 · `xs` 1 · `sm` 2 · `md` 3 · `lg` 4 · `xl` 6 · `xxl` 8; `spacing(n)`; `ThemeDensity` | `--spacing` density presets |
 | `radii` | `sm` 4 · `md` 8 · `lg` 12 · `xl` 16 · `xxl` 24; `scaled(_:)` | `--radius-{md,lg,xl,2xl}` |
-| `sizes` | `controlSmall` 32 · `controlMedium` 44 · `controlLarge` 52 · `hairline` 1 · `ring` 2 | Button size presets |
+| `sizes` | `controlSmall` 32 · `controlMedium` 44 · `controlLarge` 52 · `hairline` 1 · `ring` 2 · `avatarSmall` 32 · `avatarMedium` 40 · `avatarLarge` 56 · `avatarExtraLarge` 80 | Button and `Avatar` size presets |
 | `elevation` | `raised` · `overlay` | `shadow-*` |
-| `motion` | `fast` 0.15 · `base` 0.2 · `slow` 0.3 · `shimmer` 1.6; `EasingToken.out` `.in` `.standard` | `--duration-*` · `--ease-*` · `--animate-shimmer` |
+| `motion` | `fast` 0.15 · `base` 0.2 · `slow` 0.3 · `shimmer` 1.6 · `indeterminate` 1.4; `EasingToken.out` `.in` `.standard` | `--duration-*` · `--ease-*` · `--animate-shimmer` · `ProgressBar` slide |
 
 ## API
 

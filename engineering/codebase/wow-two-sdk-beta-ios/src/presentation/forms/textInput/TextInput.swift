@@ -60,10 +60,10 @@ private struct FieldChrome: ViewModifier {
 /// A labelled single-line text field with helper text and an error line — the fe sdk's `TextInput` inside its
 /// `Field` chrome. `error` takes a server message as is, e.g. one of `ApiFailure.fieldErrors`.
 public struct TextInput: View {
-    private let label: LocalizedStringKey
+    private let label: Text
     @Binding private var text: String
-    private let prompt: LocalizedStringKey?
-    private let message: LocalizedStringKey?
+    private let prompt: Text?
+    private let message: Text?
     private let error: String?
     private let isSecure: Bool
 
@@ -78,17 +78,35 @@ public struct TextInput: View {
         error: String? = nil,
         isSecure: Bool = false
     ) {
-        self.label = label
+        self.label = Text(label)
         self._text = text
-        self.prompt = prompt
-        self.message = message
+        self.prompt = prompt.map { Text($0) }
+        self.message = message.map { Text($0) }
+        self.error = error
+        self.isSecure = isSecure
+    }
+
+    /// Renders `label`, `prompt` and `message` verbatim, with no localization lookup.
+    @_disfavoredOverload
+    public init<Label: StringProtocol>(
+        _ label: Label,
+        text: Binding<String>,
+        prompt: String? = nil,
+        message: String? = nil,
+        error: String? = nil,
+        isSecure: Bool = false
+    ) {
+        self.label = Text(label)
+        self._text = text
+        self.prompt = prompt.map { Text(verbatim: $0) }
+        self.message = message.map { Text(verbatim: $0) }
         self.error = error
         self.isSecure = isSecure
     }
 
     public var body: some View {
         VStack(alignment: .leading, spacing: theme.spacing.xs) {
-            Text(label)
+            label
                 .font(theme.typography.label.font)
                 .foregroundStyle(theme.colors.foreground.color)
                 .accessibilityHidden(true)
@@ -104,7 +122,7 @@ public struct TextInput: View {
                     .foregroundStyle(theme.colors.destructive.softForeground.color)
                     .fixedSize(horizontal: false, vertical: true)
             } else if let message {
-                Text(message)
+                message
                     .font(theme.typography.caption.font)
                     .foregroundStyle(theme.colors.mutedForeground.color)
                     .fixedSize(horizontal: false, vertical: true)
@@ -113,11 +131,11 @@ public struct TextInput: View {
     }
 
     @ViewBuilder private var field: some View {
-        let placeholder = prompt.map { Text($0).foregroundStyle(theme.colors.subtleForeground.color) }
+        let placeholder = prompt.map { $0.foregroundStyle(theme.colors.subtleForeground.color) }
         if isSecure {
-            SecureField(label, text: $text, prompt: placeholder)
+            SecureField(text: $text, prompt: placeholder) { label }
         } else {
-            TextField(label, text: $text, prompt: placeholder)
+            TextField(text: $text, prompt: placeholder) { label }
         }
     }
 }

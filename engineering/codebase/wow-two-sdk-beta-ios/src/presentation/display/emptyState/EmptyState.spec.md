@@ -6,6 +6,7 @@ Source: [EmptyState.swift](EmptyState.swift). Public import: `import WoW2IosPres
 
 ## Contract
 
+- Every `LocalizedStringKey` init has a verbatim twin: the title takes any `StringProtocol`, optional texts take `String?`, and no localization lookup runs — for strings an app resolves itself.
 - The title carries the header trait; the icon is hidden from VoiceOver.
 - The message wraps; it never truncates.
 - Actions sit below the message; pass themed buttons.

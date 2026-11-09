@@ -14,6 +14,7 @@ Public import: `import WoW2IosPresentation` (or `WoW2Ios`). fe sdk: `Button` (`v
 - Disabled (`.disabled(true)` or the environment) dims to 0.45 opacity.
 - `ActionButton` with `.destructive` passes `role: .destructive` to the native button.
 - Medium height is 44 pt, Apple's minimum target.
+- Every `LocalizedStringKey` init has a verbatim twin: the title takes any `StringProtocol`, optional texts take `String?`, and no localization lookup runs — for strings an app resolves itself.
 
 ## `ThemeButtonStyle` — `.buttonStyle(.theme(_:size:isBusy:isFullWidth:))`
 

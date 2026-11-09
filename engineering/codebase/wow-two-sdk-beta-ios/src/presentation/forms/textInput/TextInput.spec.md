@@ -6,6 +6,7 @@ Source: [TextInput.swift](TextInput.swift). Public import: `import WoW2IosPresen
 
 ## Contract
 
+- Every `LocalizedStringKey` init has a verbatim twin: the title takes any `StringProtocol`, optional texts take `String?`, and no localization lookup runs — for strings an app resolves itself.
 - The boundary comes from `FieldAppearance.resolve(theme:isFocused:isInvalid:)`: `input` idle, `ring` focused, `destructive` invalid; 2 pt when focused or invalid.
 - `error` replaces `message` and is read to VoiceOver as the field's hint.
 - `error` takes a `String`, so a server message (`ApiFailure.fieldErrors["Email"]?.first?.message`) passes as is.

@@ -31,12 +31,21 @@ public struct ThemeMotion: Sendable, Hashable {
     public var slow: Double
     /// One sweep of the skeleton shimmer — the fe sdk's `--animate-shimmer`.
     public var shimmer: Double
+    /// One sweep of an indeterminate progress bar — the fe sdk's `ProgressBar` indeterminate slide.
+    public var indeterminate: Double
 
-    public init(fast: Double = 0.15, base: Double = 0.2, slow: Double = 0.3, shimmer: Double = 1.6) {
+    public init(
+        fast: Double = 0.15,
+        base: Double = 0.2,
+        slow: Double = 0.3,
+        shimmer: Double = 1.6,
+        indeterminate: Double = 1.4
+    ) {
         self.fast = fast
         self.base = base
         self.slow = slow
         self.shimmer = shimmer
+        self.indeterminate = indeterminate
     }
 
     /// Seconds for `speed`.

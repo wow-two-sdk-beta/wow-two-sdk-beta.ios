@@ -6,6 +6,7 @@ Source: [SheetHeader.swift](SheetHeader.swift). Public import: `import WoW2IosPr
 
 ## Contract
 
+- Every `LocalizedStringKey` init has a verbatim twin: the title takes any `StringProtocol`, optional texts take `String?`, and no localization lookup runs — for strings an app resolves itself.
 - Close calls `onClose` when set, else the environment's `dismiss`, so a sheet needs no wiring.
 - The close target is 44 pt; VoiceOver reads it as "Close".
 - The title uses the title role with the header trait; the description wraps.

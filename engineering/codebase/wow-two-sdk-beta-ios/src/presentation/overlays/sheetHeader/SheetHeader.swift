@@ -4,8 +4,8 @@ import WoW2IosTheme
 /// A sheet's title row: title, optional description and a close button that dismisses the sheet — the fe sdk's
 /// `OverlayHeader` with `OverlayTitle`, `OverlayDescription` and `OverlayCloseButton`.
 public struct SheetHeader: View {
-    private let title: LocalizedStringKey
-    private let description: LocalizedStringKey?
+    private let title: Text
+    private let description: Text?
     private let showsClose: Bool
     private let onClose: (@MainActor () -> Void)?
 
@@ -19,8 +19,22 @@ public struct SheetHeader: View {
         showsClose: Bool = true,
         onClose: (@MainActor () -> Void)? = nil
     ) {
-        self.title = title
-        self.description = description
+        self.title = Text(title)
+        self.description = description.map { Text($0) }
+        self.showsClose = showsClose
+        self.onClose = onClose
+    }
+
+    /// Renders `title` and `description` verbatim, with no localization lookup.
+    @_disfavoredOverload
+    public init<Title: StringProtocol>(
+        _ title: Title,
+        description: String? = nil,
+        showsClose: Bool = true,
+        onClose: (@MainActor () -> Void)? = nil
+    ) {
+        self.title = Text(title)
+        self.description = description.map { Text(verbatim: $0) }
         self.showsClose = showsClose
         self.onClose = onClose
     }
@@ -28,12 +42,12 @@ public struct SheetHeader: View {
     public var body: some View {
         HStack(alignment: .top, spacing: theme.spacing.md) {
             VStack(alignment: .leading, spacing: theme.spacing.xxs) {
-                Text(title)
+                title
                     .font(theme.typography.title.font)
                     .foregroundStyle(theme.colors.foreground.color)
                     .accessibilityAddTraits(.isHeader)
                 if let description {
-                    Text(description)
+                    description
                         .font(theme.typography.body.font)
                         .foregroundStyle(theme.colors.mutedForeground.color)
                         .fixedSize(horizontal: false, vertical: true)

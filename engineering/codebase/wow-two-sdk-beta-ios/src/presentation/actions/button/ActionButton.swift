@@ -64,17 +64,40 @@ extension ActionButton where Label == ButtonLabel {
             ButtonLabel(title, systemImage: systemImage)
         }
     }
+
+    /// Renders `title` verbatim, with no localization lookup.
+    @_disfavoredOverload
+    public init<Title: StringProtocol>(
+        _ title: Title,
+        systemImage: String? = nil,
+        variant: ButtonVariant = .primary,
+        size: ButtonSize = .medium,
+        isFullWidth: Bool = false,
+        isBusy: Bool = false,
+        action: @escaping @MainActor () async -> Void
+    ) {
+        self.init(variant: variant, size: size, isFullWidth: isFullWidth, isBusy: isBusy, action: action) {
+            ButtonLabel(title, systemImage: systemImage)
+        }
+    }
 }
 
 /// A button's title with an optional leading SF Symbol.
 public struct ButtonLabel: View {
-    private let title: LocalizedStringKey
+    private let title: Text
     private let systemImage: String?
 
     @Environment(\.wow2Theme) private var theme
 
     public init(_ title: LocalizedStringKey, systemImage: String? = nil) {
-        self.title = title
+        self.title = Text(title)
+        self.systemImage = systemImage
+    }
+
+    /// Renders `title` verbatim, with no localization lookup.
+    @_disfavoredOverload
+    public init<Title: StringProtocol>(_ title: Title, systemImage: String? = nil) {
+        self.title = Text(title)
         self.systemImage = systemImage
     }
 
@@ -83,7 +106,7 @@ public struct ButtonLabel: View {
             if let systemImage {
                 Image(systemName: systemImage).accessibilityHidden(true)
             }
-            Text(title)
+            title
         }
     }
 }

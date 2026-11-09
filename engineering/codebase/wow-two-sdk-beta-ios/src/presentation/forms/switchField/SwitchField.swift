@@ -32,8 +32,8 @@ private struct ThemeToggleBody: View {
 /// A row holding one on/off setting: icon, title, description and the themed switch, read by VoiceOver as one
 /// toggle — the fe sdk's `SwitchField`. Place it in a `ListGroup`.
 public struct SwitchField: View {
-    private let title: LocalizedStringKey
-    private let description: LocalizedStringKey?
+    private let title: Text
+    private let description: Text?
     private let systemImage: String?
     @Binding private var isOn: Bool
 
@@ -45,8 +45,22 @@ public struct SwitchField: View {
         systemImage: String? = nil,
         isOn: Binding<Bool>
     ) {
-        self.title = title
-        self.description = description
+        self.title = Text(title)
+        self.description = description.map { Text($0) }
+        self.systemImage = systemImage
+        self._isOn = isOn
+    }
+
+    /// Renders `title` and `description` verbatim, with no localization lookup.
+    @_disfavoredOverload
+    public init<Title: StringProtocol>(
+        _ title: Title,
+        description: String? = nil,
+        systemImage: String? = nil,
+        isOn: Binding<Bool>
+    ) {
+        self.title = Text(title)
+        self.description = description.map { Text(verbatim: $0) }
         self.systemImage = systemImage
         self._isOn = isOn
     }

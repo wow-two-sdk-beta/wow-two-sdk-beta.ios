@@ -6,6 +6,7 @@ Source: [SectionHeader.swift](SectionHeader.swift). Public import: `import WoW2I
 
 ## Contract
 
+- Every `LocalizedStringKey` init has a verbatim twin: the title takes any `StringProtocol`, optional texts take `String?`, and no localization lookup runs — for strings an app resolves itself.
 - The title uses the heading role and carries the header trait.
 - The trailing view aligns to the title's first baseline.
 

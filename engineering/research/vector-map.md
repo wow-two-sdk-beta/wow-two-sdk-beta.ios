@@ -1,6 +1,6 @@
 # Vector map
 
-*Last updated: 2026-11-09*
+*Last updated: 2026-11-10*
 
 > Which capabilities the ios sdk can grow, where each comes from, and the trigger that pulls it.
 > Use case — picking the next vector for `backlog.md`.
@@ -17,7 +17,7 @@
 | `auth` | backlog | token store in Keychain, refresh, sign-in with Apple; pairs with Identity |
 | `query` | backlog | cached async loads with refresh — an `@Observable` resource over `ApiClient` |
 | `formsEngine` / `validators` | backlog | field state + server `FieldError` mapping onto `TextInput` |
-| `presentation/*` | 10 families shipped | next: badge, avatar, segmented picker, progress, banner, confirm dialog |
+| `presentation/*` | 16 families shipped (`0.0.2`: select field, segmented control, badge, avatar, banner, progress bar) | next: confirm dialog |
 
 ## From Pose Coach (`ventures.pose-coach`, `apps/ios/PoseCoach`)
 

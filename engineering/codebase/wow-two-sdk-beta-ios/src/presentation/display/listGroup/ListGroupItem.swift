@@ -4,8 +4,8 @@ import WoW2IosTheme
 /// One row of a `ListGroup`: an optional icon tile, a title, an optional description and a trailing view — the
 /// fe sdk's `ListGroupItem`. With an `action` the whole row is one button with a chevron.
 public struct ListGroupItem<Trailing: View>: View {
-    private let title: LocalizedStringKey
-    private let description: LocalizedStringKey?
+    private let title: Text
+    private let description: Text?
     private let systemImage: String?
     private let action: (@MainActor () -> Void)?
     private let trailing: Trailing
@@ -19,7 +19,35 @@ public struct ListGroupItem<Trailing: View>: View {
         action: (@MainActor () -> Void)? = nil,
         @ViewBuilder trailing: () -> Trailing
     ) {
-        self.title = title
+        self.init(
+            text: Text(title), description: description.map { Text($0) }, systemImage: systemImage, action: action,
+            trailing: trailing
+        )
+    }
+
+    /// Renders `title` and `description` verbatim, with no localization lookup.
+    @_disfavoredOverload
+    public init<Title: StringProtocol>(
+        _ title: Title,
+        description: String? = nil,
+        systemImage: String? = nil,
+        action: (@MainActor () -> Void)? = nil,
+        @ViewBuilder trailing: () -> Trailing
+    ) {
+        self.init(
+            text: Text(title), description: description.map { Text(verbatim: $0) }, systemImage: systemImage,
+            action: action, trailing: trailing
+        )
+    }
+
+    private init(
+        text: Text,
+        description: Text?,
+        systemImage: String?,
+        action: (@MainActor () -> Void)?,
+        trailing: () -> Trailing
+    ) {
+        self.title = text
         self.description = description
         self.systemImage = systemImage
         self.action = action
@@ -65,12 +93,24 @@ extension ListGroupItem where Trailing == EmptyView {
     ) {
         self.init(title, description: description, systemImage: systemImage, action: action) { EmptyView() }
     }
+
+    /// Renders `title` and `description` verbatim, with no localization lookup.
+    @_disfavoredOverload
+    public init<Title: StringProtocol>(
+        _ title: Title,
+        description: String? = nil,
+        systemImage: String? = nil,
+        action: (@MainActor () -> Void)? = nil
+    ) {
+        self.init(title, description: description, systemImage: systemImage, action: action) { EmptyView() }
+    }
 }
 
-/// The row's leading icon tile, title and description; shared by `ListGroupItem` and `SwitchField`.
+/// The row's leading icon tile, title and description; shared by `ListGroupItem`, `SwitchField` and
+/// `SelectField`. Reports its title's leading edge for `ListGroup`'s inset separators.
 struct RowLabel: View {
-    let title: LocalizedStringKey
-    let description: LocalizedStringKey?
+    let title: Text
+    let description: Text?
     let systemImage: String?
 
     @Environment(\.wow2Theme) private var theme
@@ -89,21 +129,22 @@ struct RowLabel: View {
                     .accessibilityHidden(true)
             }
             VStack(alignment: .leading, spacing: theme.spacing.xxs) {
-                Text(title)
+                title
                     .font(theme.typography.label.font)
                     .foregroundStyle(theme.colors.foreground.color)
                 if let description {
-                    Text(description)
+                    description
                         .font(theme.typography.caption.font)
                         .foregroundStyle(theme.colors.mutedForeground.color)
                 }
             }
+            .anchorPreference(key: RowTitleLeadingKey.self, value: .leading) { [$0] }
         }
     }
 }
 
 /// The card fill, darkening to muted while pressed.
-private struct RowPressStyle: ButtonStyle {
+struct RowPressStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         RowPressBody(label: configuration.label, isPressed: configuration.isPressed)
     }
