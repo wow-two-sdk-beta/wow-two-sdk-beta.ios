@@ -1,0 +1,144 @@
+name: release-ios
+
+# ios sdk release (`WoW2SdkBetaIos`, SwiftPM). Modelled on wow-two-sdk-beta.fe's `release-fe.yml`.
+# SwiftPM has no registry: a consumer resolves the package from this repository's git tags, so a release is a
+# tested commit on main plus the next `0.0.y` tag. The manifest carries no version, so no release commit is
+# pushed — only the tag moves. Tags carry no prefix: SwiftPM reads `0.0.y` as a semantic version.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'Package.swift'
+      - 'engineering/codebase/wow-two-sdk-beta-ios/**'
+      - '.github/workflows/release-ios.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write # push the tag + create the GitHub Release
+
+concurrency:
+  group: release-ios-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: github.ref == 'refs/heads/main'
+    name: build · test · tag
+    runs-on: macos-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+          ref: main
+
+      # The newest stable Xcode on the runner; the package needs Swift 6 tools and the iOS 17+ SDK.
+      - name: Select Xcode
+        run: |
+          XCODE=$(ls -d /Applications/Xcode_*.app | grep -viE 'beta|release_candidate|_rc' | sort -V | tail -1)
+          sudo xcode-select -s "$XCODE"
+          xcodebuild -version
+
+      # The newest iPhone simulator on the newest iOS runtime the runner has.
+      - name: Pick simulator
+        id: simulator
+        run: |
+          UDID=$(xcrun simctl list devices available -j | python3 -c '
+          import json, sys
+          devices = json.load(sys.stdin)["devices"]
+          found = [
+              ([int(part) for part in runtime.rsplit("iOS-", 1)[1].split("-")], device["udid"])
+              for runtime, items in devices.items() if ".iOS-" in runtime
+              for device in items if device["name"].startswith("iPhone")
+          ]
+          found.sort()
+          print(found[-1][1])
+          ')
+          echo "destination=platform=iOS Simulator,id=$UDID" >> "$GITHUB_OUTPUT"
+
+      - name: Build and test
+        run: |
+          xcodebuild -scheme WoW2SdkBetaIos-Package \
+            -destination '${{ steps.simulator.outputs.destination }}' \
+            -derivedDataPath "$RUNNER_TEMP/derived" \
+            -quiet test
+
+      # Next patch = one past the highest `0.0.*` tag; `0.0.1` on the first release. A commit already tagged
+      # (a re-run) releases nothing.
+      - name: Next version
+        id: version
+        run: |
+          if [ -n "$(git tag --points-at HEAD --list '0.0.*')" ]; then
+            echo "::notice::HEAD is already tagged $(git tag --points-at HEAD --list '0.0.*'); nothing to release"
+            exit 0
+          fi
+          LAST=$(git tag --list '0.0.*' | sort -V | tail -1)
+          if [ -z "$LAST" ]; then VERSION=0.0.1; else VERSION="0.0.$(( ${LAST##*.} + 1 ))"; fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "::notice::Releasing WoW2SdkBetaIos $VERSION"
+
+      # Stop if main changed while this checkout was being verified: the tag must name the tested source.
+      - name: Verify release source
+        if: steps.version.outputs.version != ''
+        run: |
+          git fetch origin "$GITHUB_REF_NAME"
+          test "$(git rev-parse FETCH_HEAD)" = "$(git rev-parse HEAD)"
+
+      - name: Tag
+        if: steps.version.outputs.version != ''
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "$VERSION" -m "ios $VERSION"
+          git push origin "refs/tags/$VERSION"
+
+      - name: Create GitHub Release
+        if: steps.version.outputs.version != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          PREV=$(git describe --tags --abbrev=0 --match '0.0.*' "${VERSION}^" 2>/dev/null || true)
+          RANGE=${PREV:+${PREV}..}HEAD
+
+          # Subjects of commits touching the package only: the manifest and the code dir.
+          LOG=$(git log "$RANGE" --no-merges --pretty=format:'%s' -- Package.swift engineering/codebase/wow-two-sdk-beta-ios || true)
+
+          section() {
+            # $1 = conventional-commit type, $2 = section heading
+            local body
+            body=$(printf '%s\n' "$LOG" \
+              | grep -E "^$1(\(.+\))?!?:" \
+              | sed -E "s/^$1(\(.+\))?!?:[[:space:]]*//" \
+              | sed -E 's/^/- /' || true)
+            if [ -n "$body" ]; then
+              printf '### %s\n\n%s\n\n' "$2" "$body"
+            fi
+          }
+
+          {
+            echo "Tagged \`WoW2SdkBetaIos\` ${VERSION}: \`.package(url: \"https://github.com/${GITHUB_REPOSITORY}\", exact: \"${VERSION}\")\`."
+            echo
+            CHANGELOG=$(
+              section 'feat'     'Features'
+              section 'fix'      'Fixes'
+              section 'perf'     'Performance'
+              section 'refactor' 'Refactors'
+              section 'docs'     'Docs'
+              section 'chore'    'Chores'
+            )
+            if [ -n "$CHANGELOG" ]; then
+              echo "## Changelog"
+              echo
+              printf '%s\n\n' "$CHANGELOG"
+            else
+              echo "_No conventional-commit changes since ${PREV:-the beginning}._"
+            fi
+          } > "$RUNNER_TEMP/release-notes.md"
+
+          gh release create "$VERSION" --title "$VERSION" --notes-file "$RUNNER_TEMP/release-notes.md"
