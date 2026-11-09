@@ -31,7 +31,7 @@ Source: [ListGroup.swift](ListGroup.swift), [ListGroupItem.swift](ListGroupItem.
 | `description` | `LocalizedStringKey?` | `nil` | A second, muted line. |
 | `systemImage` | `String?` | `nil` | An SF Symbol in a primary-soft tile. |
 | `action` | `(@MainActor () -> Void)?` | `nil` | Makes the row a button with a chevron. |
-| `trailing` | `@ViewBuilder` | none | A value or control at the end, in the muted label style. |
+| `trailing` | `@ViewBuilder` | none | A value or control at the end, in the muted label style; one line, shrinking to 80 % before the title wraps. |
 
 ## Verification
 

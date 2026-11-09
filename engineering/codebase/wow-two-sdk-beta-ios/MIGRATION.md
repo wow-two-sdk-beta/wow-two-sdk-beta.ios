@@ -17,12 +17,15 @@ Additive: no call site written against `0.0.1` changes. Pin `exact: "0.0.2"`.
 | `feedback` | `Banner` (`BannerTone`, title, message, action, dismiss), `ProgressBar` (determinate and indeterminate). Specs beside each |
 | `forms` | `SelectField` + `SelectOption` (shared with `SegmentedControl`). [Spec](src/presentation/forms/selectField/SelectField.spec.md) |
 | `ListGroup` | `separator: .inset` starts the hairlines at the row titles; `.full` stays the default |
+| `ListGroupItem` | The title keeps its line; a trailing value one line long shrinks to 80 % before the title wraps |
+| `wow2Theme` | `tintsControls: false` applies the theme without `.tint`, for an app whose `AccentColor` asset carries the brand |
 | Titles | A verbatim `String` overload beside every `LocalizedStringKey` init: `ListGroup`, `ListGroupItem`, `SwitchField`, `TextInput`, `SheetHeader`, `EmptyState`, `SectionHeader`, `ActionButton`, `ButtonLabel`. The title takes any `StringProtocol`, optional texts `String?` |
 
 | Changed signature | Before → after |
 |---|---|
 | `ListGroup.init` | gains `separator: ListGroupSeparator = .full` before `content` |
 | `ThemeSizes.init`, `ThemeMotion.init` | gain trailing defaulted parameters |
+| `View.wow2Theme` | gains `tintsControls: Bool = true` |
 
 - A string literal still picks the `LocalizedStringKey` init; a `String` variable now compiles and renders as is, so `Text(verbatim:)` wrappers in app code can go.
 - `Toast` / `ToastCenter` already took `String`; unchanged.

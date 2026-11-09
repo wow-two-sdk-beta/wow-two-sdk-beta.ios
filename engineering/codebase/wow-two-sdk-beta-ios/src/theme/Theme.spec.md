@@ -11,6 +11,7 @@ Public import: `import WoW2IosTheme` (or `WoW2Ios`).
 - `Theme.standard` equals the fe sdk's default theme token for token (`src/index.css`, OKLCH converted to sRGB).
 - Components read `@Environment(\.wow2Theme)` only; a literal colour, font, radius or duration in a component is a defect.
 - `.wow2Theme(_:)` also sets `.tint` to `colors.primary.base`, so native controls follow the brand.
+- `.wow2Theme(_:tintsControls: false)` sets no tint, for an app whose `AccentColor` asset carries the brand: an explicit tint also colours iOS 26 toolbar glyphs.
 - A `ColorToken` resolves light or dark from the trait environment; `resolve(_:)` gives the value for tests.
 - Typography uses Dynamic Type text styles; a custom `fontName` scales `relativeTo:` its style.
 - `motion.animation(…, reduceMotion: true)` is `nil`, so animated components jump under Reduce Motion.
@@ -36,7 +37,7 @@ Public import: `import WoW2IosTheme` (or `WoW2Ios`).
 | `Theme.with(id:_:)` | A copy with a new id and edited tokens. |
 | `ThemeColors[tone]` | Reads or writes a tone family by `Tone`. |
 | `ThemeTypography.design(_:)` | Every role but `mono` in another design (`.rounded`, `.serif`). |
-| `View.wow2Theme(_:)` | Applies the theme below this view. |
+| `View.wow2Theme(_:tintsControls:)` | Applies the theme below this view; `tintsControls` defaults to `true`. |
 | `View.themedBackground()` | Paints `background` edge to edge and sets `foreground`. |
 | `ShapeStyle.token(_:)` | A token's dynamic colour for `foregroundStyle`. |
 

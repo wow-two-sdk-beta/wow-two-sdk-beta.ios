@@ -68,11 +68,15 @@ public struct ListGroupItem<Trailing: View>: View {
 
     private func row(showsChevron: Bool) -> some View {
         HStack(spacing: theme.spacing.md) {
+            // The title keeps its line: a trailing value that is a few points too wide shrinks before the title wraps.
             RowLabel(title: title, description: description, systemImage: systemImage)
+                .layoutPriority(1)
             Spacer(minLength: theme.spacing.sm)
             trailing
                 .font(theme.typography.label.font)
                 .foregroundStyle(theme.colors.mutedForeground.color)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
             if showsChevron {
                 Image(systemName: "chevron.right")
                     .font(.footnote.weight(.semibold))
