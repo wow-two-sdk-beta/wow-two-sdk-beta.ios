@@ -11,7 +11,9 @@
 WoW2Ios (umbrella, @_exported)
 ├── WoW2IosPresentation ──► WoW2IosTheme ──► SwiftUI
 ├── WoW2IosTheme
-└── WoW2IosFoundation ──► Foundation, os
+└── WoW2IosFoundation ──► Foundation, Observation, os
+
+WoW2IosCapture (its own import) ──► SwiftUI, AVKit, Photos, ImageIO
 ```
 
 | Module | fe sdk counterpart | Rule |
@@ -19,6 +21,7 @@ WoW2Ios (umbrella, @_exported)
 | `WoW2IosFoundation` | `src/foundation` (non-UI) | imports no SwiftUI and no other SDK module |
 | `WoW2IosTheme` | `src/foundation/themes` | SwiftUI value types only; no views beyond the environment modifiers |
 | `WoW2IosPresentation` | `src/presentation` | reads the theme from the environment; never imports foundation |
+| `WoW2IosCapture` | — | camera and Photos helpers; outside the umbrella, so only an app that imports it links those frameworks |
 | `WoW2IosShowcase` | `apps/playground` | a target for previews and render tests; never a product |
 
 - SwiftPM target dependencies enforce the arrows; the fe sdk needs ESLint boundaries for the same rule.

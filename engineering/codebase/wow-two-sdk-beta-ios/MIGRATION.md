@@ -5,6 +5,33 @@
 Consumer-facing changes per tagged version, newest first. Pin `exact:`; every tag may break, and its entry here says
 how to move.
 
+## 0.0.3 — Pose Coach extractions
+
+Additive: no call site written against `0.0.2` changes. Pin `exact: "0.0.3"`.
+
+| Area | Added |
+|---|---|
+| `WoW2IosTheme` | `colors.scrim` · `scrimForeground` (black 60 %, white: the fill and text over media, checked by `ThemeContrast`); `states.disabledOpacity` · `pressedOpacity` · `pressedScale` · `pressedWashOpacity` (0.45 · 0.85 · 0.97 · 0.1), read by every control. [Spec](src/theme/Theme.spec.md) |
+| `actions` | `IconButton`, `ToggleIconButton`, `IconButtonStyle` (`.buttonStyle(.icon(.overMedia))`); `OptionTile`, `OptionTileStrip`. Specs beside each |
+| `display` | `MediaCard` (static, tappable, or a `NavigationLink(value:)`; an accessory on a media corner), `BulletList` (dot, symbol or number markers). Specs beside each |
+| `feedback` | `Spinner`, `LoadingState`, `MediaPill`. Specs beside each |
+| `forms` | `ChoiceField`, the radio row of a `ListGroup`. [Spec](src/presentation/forms/choiceField/ChoiceField.spec.md) |
+| `layout` | New family. `ActionBar` and `.actionBar { … }`, a bottom bar over the safe area. [Spec](src/presentation/layout/actionBar/ActionBar.spec.md) |
+| `WoW2IosFoundation` | `AppLanguage`: a runtime interface language over JSON catalogues, with a persisted choice. [Spec](src/foundation/localization/AppLanguage.spec.md) |
+| `WoW2IosCapture` | New product, outside the umbrella. `.hardwareShutter(isEnabled:onPress:)` and `HardwareShutterPolicy`; `PhotoImport`, `ImportedPhoto`, `PhotoLibrary`, `JpegExport`, `UIImage.uprightImage(maxDimension:)`. Specs in [`shutter/`](src/capture/shutter/HardwareShutter.spec.md) and [`photo/`](src/capture/photo/Photo.spec.md) |
+
+| Changed signature | Before → after |
+|---|---|
+| `Theme.init` | gains `states: ThemeStates = .standard` |
+| `ThemeColors.init` | gains defaulted `scrim` and `scrimForeground` |
+
+- `WoW2IosCapture` is its own import and its own package product: add it to the target beside `WoW2Ios`. An app that
+  saves to Photos still declares `NSPhotoLibraryAddUsageDescription`.
+- `.hardwareShutter` does nothing below iOS 18, where SwiftUI has no capture events.
+- `AppLanguage` takes a `Configuration`: the app's languages, its bundle, the catalogue file name per code, and the
+  `UserDefaults` key. An app keeps its catalogue files.
+- A disabled or pressed control now reads `theme.states`; the standard values equal the literals they replace.
+
 ## 0.0.2 — second component batch
 
 Additive: no call site written against `0.0.1` changes. Pin `exact: "0.0.2"`.

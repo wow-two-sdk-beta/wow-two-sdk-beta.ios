@@ -17,18 +17,19 @@
 | `auth` | backlog | token store in Keychain, refresh, sign-in with Apple; pairs with Identity |
 | `query` | backlog | cached async loads with refresh — an `@Observable` resource over `ApiClient` |
 | `formsEngine` / `validators` | backlog | field state + server `FieldError` mapping onto `TextInput` |
-| `presentation/*` | 16 families shipped (`0.0.2`: select field, segmented control, badge, avatar, banner, progress bar) | next: confirm dialog |
+| `presentation/*` | 25 families shipped (`0.0.3`: spinner, loading state, icon buttons, media pill, option tiles, choice field, media card, bullet list, action bar) | next: confirm dialog |
 
 ## From Pose Coach (`ventures.pose-coach`, `apps/ios/PoseCoach`)
 
 | Code | Generic part | Trigger |
 |---|---|---|
-| `Localization/Services/AppLanguage.swift` | runtime language choice + persistence | the second app with in-app language switching |
+| `Localization/Services/AppLanguage.swift` | runtime language choice + persistence | shipped `0.0.3` as `AppLanguage` in foundation |
 | `Purchases/*` (`StoreKitClient`, `PurchaseStore`, `PurchaseConfiguration`) | StoreKit 2 store, bundled config, paywall | the second app that sells a subscription |
-| `Camera/Services/CameraSession.swift`, `PhotoImport.swift`, `PhotoLibrary.swift` | capture session, import, library save | the second camera app |
+| `Camera/Services/PhotoImport.swift`, `PhotoLibrary.swift`, `CollageExport.swift`, `HardwareShutter*.swift` | photo import, library save, JPEG export, hardware shutter | shipped `0.0.3` as `WoW2IosCapture` |
+| `Camera/Services/CameraSession.swift`, `CameraPreview.swift`, `CameraScreenTasks.swift`, `HeldScreenDisplayLease.swift`, `HostCaptureClock.swift` | capture session, preview, screen tasks, display lease, capture clock | the second camera app |
 | `Duo/Services/DuoTransport.swift` + `MultipeerDuoTransport.swift` | nearby peer transport | the second nearby-sync feature |
 | `Live/Services/CoachVoice.swift` | speech synthesis + recognition | the second voice feature |
-| `os.Logger` call sites (`ShootModel`, `DuoSession`) | adopt `Log` | Pose Coach's adoption pass |
+| `os.Logger` call sites (`ShootModel`, `DuoSession`) | adopt `Log` | adopted 2026-11-10 |
 
 - Pose Coach has no theme module and no API client: the theme and `ApiClient` are new ground, not extractions.
 - Pose Coach pins `0.0.2` since 2026-11-10: its brand theme and Settings screen use the sdk; its buttons, cards,

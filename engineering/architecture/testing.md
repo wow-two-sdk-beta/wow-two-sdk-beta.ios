@@ -19,9 +19,10 @@ xcodebuild -scheme WoW2SdkBetaIos-Package -destination 'platform=iOS Simulator,n
 
 | Target | Proves |
 |---|---|
-| `WoW2IosFoundationTests` | config parsing and its failures; the client's request building, envelope and problem decoding, status → kind mapping, transport errors, logging without the query; log levels and sinks |
-| `WoW2IosThemeTests` | the default tokens equal the fe sdk's; WCAG AA in both modes; hex, scheme resolution, density, motion, typography helpers |
+| `WoW2IosFoundationTests` | config parsing and its failures; the client's request building, envelope and problem decoding, status → kind mapping, transport errors, logging without the query; log levels and sinks; language resolution, catalogue loading on first use, the persisted choice |
+| `WoW2IosThemeTests` | the default tokens equal the fe sdk's; WCAG AA in both modes; hex, scheme resolution, density, motion, states, the scrim, typography helpers |
 | `WoW2IosPresentationTests` | every `*Appearance` reads the right tokens; one token change restyles each reader; the toast queue; the whole gallery renders under two themes × two schemes |
+| `WoW2IosCaptureTests` | the shutter policy; the bounded decode and its size limits; JPEG export; the upright redraw |
 
 ## Limits
 

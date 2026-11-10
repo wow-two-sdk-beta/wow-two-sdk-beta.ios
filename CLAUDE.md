@@ -19,9 +19,10 @@ API client, config and logging — the fe sdk's role for web apps.
 | Product · module | Holds | Imports |
 |---|---|---|
 | `WoW2Ios` | the umbrella: re-exports the three below | all three |
-| `WoW2IosFoundation` | `config/` (`AppConfig`), `http/` (`ApiClient`, envelope, problem details), `logger/` (`Log`) | Foundation, os |
+| `WoW2IosFoundation` | `config/` (`AppConfig`), `http/` (`ApiClient`, envelope, problem details), `logger/` (`Log`), `localization/` (`AppLanguage`) | Foundation, Observation, os |
 | `WoW2IosTheme` | `Theme` and its tokens, the `wow2Theme` environment value | SwiftUI |
 | `WoW2IosPresentation` | the components | `WoW2IosTheme` |
+| `WoW2IosCapture` | `shutter/` (hardware shutter modifier and policy), `photo/` (bounded import, library save, JPEG export) — never in the umbrella | SwiftUI, AVKit, Photos, ImageIO |
 
 - Naming mirrors `WoW2.Sdk.Beta.Be` (package `WoW2SdkBetaIos`) and the fe sdk's layers (`foundation`,
   `presentation`, `foundation/themes` → its own `theme` module).
@@ -35,13 +36,17 @@ API client, config and logging — the fe sdk's role for web apps.
 
 ## Layout
 
-- `src/foundation/{config,http,logger}` — no SwiftUI, no theme; usable from app extensions and background code.
+- `src/foundation/{config,http,logger,localization}` — no SwiftUI, no theme; usable from app extensions and
+  background code.
 - `src/theme/` — tokens, `Theme`, environment, `ThemeContrast`.
-- `src/presentation/{actions,display,feedback,forms,overlays}` — components, grouped as the fe sdk groups them.
+- `src/presentation/{actions,display,feedback,forms,layout,overlays}` — components, grouped as the fe sdk groups
+  them.
+- `src/capture/{shutter,photo}` — camera and Photos helpers; an app imports `WoW2IosCapture` itself, so an app
+  without a camera links neither framework and needs no purpose strings.
 - `src/umbrella/` — `@_exported import` of the three layers.
 - `apps/showcase/` — `ShowcaseView` (every component under a theme switch) and its `#Preview`s; a target, never a
-  product.
-- `tests/unit/{foundation,theme,presentation}` mirror `src/`; `tests/support/` holds `StubTransport`.
+  product. A family may draw its section in its own `*Showcase.swift`, placed in `ShowcaseGallery`.
+- `tests/unit/{foundation,theme,presentation,capture}` mirror `src/`; `tests/support/` holds `StubTransport`.
 - `MIGRATION.md` — consumer-facing changes per version, newest first.
 - `engineering/` — planning, architecture, research, development rules (`engineering/engineering.md`).
 
@@ -55,8 +60,8 @@ API client, config and logging — the fe sdk's role for web apps.
 
 ## Theming
 
-- `Theme` = `colors` (the fe sdk's 40 semantic tokens, camel-cased) · `typography` · `spacing` · `radii` · `sizes` ·
-  `elevation` · `motion`.
+- `Theme` = `colors` (the fe sdk's 40 semantic tokens, camel-cased, plus `scrim` for media) · `typography` ·
+  `spacing` · `radii` · `sizes` · `elevation` · `motion` · `states` (disabled and pressed).
 - An app applies one theme at its root with `.wow2Theme(theme)`; it also tints native controls with `primary`.
 - Components read `@Environment(\.wow2Theme)` only — never a literal colour, font, radius or duration.
 - Each component resolves its look through a pure `*Appearance.resolve(theme:…)` (the fe sdk's `*.variants.ts`);
