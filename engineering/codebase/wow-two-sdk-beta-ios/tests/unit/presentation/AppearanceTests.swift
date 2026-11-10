@@ -180,6 +180,22 @@ struct AppearanceTests {
         #expect(AvatarAppearance.resolve(theme: brand).side == 44)
     }
 
+    @Test func stateTokensRestyleEveryControl() {
+        let brand = Theme.standard.with(id: "states") {
+            $0.states.disabledOpacity = 0.3
+            $0.states.pressedOpacity = 0.7
+            $0.states.pressedScale = 0.9
+        }
+        #expect(ButtonAppearance.resolve(theme: brand, variant: .primary, isEnabled: false).opacity == 0.3)
+        #expect(ButtonAppearance.resolve(theme: brand, variant: .primary, isPressed: true).opacity == 0.7)
+        #expect(SegmentedControlAppearance.resolve(theme: brand, isEnabled: false).opacity == 0.3)
+        #expect(SelectFieldAppearance.resolve(theme: brand, isEnabled: false).opacity == 0.3)
+        #expect(ChoiceFieldAppearance.resolve(theme: brand, isEnabled: false).opacity == 0.3)
+        #expect(IconButtonAppearance.resolve(theme: brand, variant: .filled, isEnabled: false).opacity == 0.3)
+        #expect(MediaCardAppearance.resolve(theme: brand, isPressed: true).opacity == 0.7)
+        #expect(OptionTileAppearance.resolve(theme: brand, isPressed: true).scale == 0.9)
+    }
+
     @Test func standardThemeStillClearsWcagAa() {
         #expect(ThemeContrast.failures(.standard) == [])
     }

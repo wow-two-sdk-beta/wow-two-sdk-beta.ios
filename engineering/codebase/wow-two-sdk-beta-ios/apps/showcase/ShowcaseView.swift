@@ -200,6 +200,10 @@ public struct ShowcaseGallery: View {
             EmptyState("No photos yet", systemImage: "photo.on.rectangle", message: "Shoot one to see it here.") {
                 Button("Open camera") {}.buttonStyle(.theme(.primary))
             }
+
+            FeedbackActionsShowcase()
+            SelectionShowcase()
+            DisplayLayoutShowcase()
         }
         .sheet(isPresented: $isSheetShown) {
             VStack(alignment: .leading) {
