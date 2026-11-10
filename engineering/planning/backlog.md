@@ -43,6 +43,9 @@ Every unbuilt item, grouped; top of each group = next. Shipped work lives in [`v
 | `OptionTileStrip` action mode | feature | tiles that run an action with no selection, plus a per-tile hint; Pose Coach lays out `OptionTile`s by hand in its eye-style picker |
 | Hero typography role | feature | a role above `display` for a short code or number; Pose Coach's 52 pt shoot code stays native |
 | Title 3 typography role | feature | between `title` and `heading`; Pose Coach reads `heading` at regular weight for a lead paragraph |
+| `ListGroupItem` leading view slot | feature | an avatar or thumbnail in place of the system image; Pose Coach's People rows show an icon, not the contact photo |
+| Swipe actions on `ListGroup` rows | feature | `ListGroup` is not a `List`; Pose Coach deletes a person from a button and a long-press menu |
+| `SelectField` long-value layout | feature | a long value truncates beside its title; Pose Coach's `Guidance and commands` reads `Guidance and comm…` |
 
 ## Extractions
 
@@ -52,6 +55,7 @@ Every unbuilt item, grouped; top of each group = next. Shipped work lives in [`v
 | Camera session and preview | feature | Pose Coach `Camera/Services/CameraSession.swift`, `CameraPreview.swift`, plus its screen tasks, display lease and capture clock; trigger: a second camera app |
 | Nearby peer transport | feature | Pose Coach `Duo/Services/*Transport.swift` |
 | Speech synthesis and recognition | feature | Pose Coach `Live/Services/CoachVoice.swift` |
+| JSON file store under Application Support | feature | Pose Coach `PeopleStore`, `DraftDisk` and `GalleryDisk` each hand-roll load, atomic save and corrupt-file recovery |
 
 ## Engineering
 
