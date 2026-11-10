@@ -11,7 +11,7 @@ Public import: `import WoW2IosPresentation` (or `WoW2Ios`). fe sdk: `Button` (`v
 - The look comes from `ButtonAppearance.resolve(theme:variant:size:isPressed:isEnabled:)` alone.
 - Busy draws the spinner over the transparent label, so width and accessible name hold; VoiceOver hears the value "Loading".
 - Busy ignores taps; `ActionButton` also refuses a second run while one is pending.
-- Disabled (`.disabled(true)` or the environment) dims to 0.45 opacity.
+- Disabled (`.disabled(true)` or the environment) dims to `states.disabledOpacity`.
 - `ActionButton` with `.destructive` passes `role: .destructive` to the native button.
 - Medium height is 44 pt, Apple's minimum target.
 - Every `LocalizedStringKey` init has a verbatim twin: the title takes any `StringProtocol`, optional texts take `String?`, and no localization lookup runs — for strings an app resolves itself.

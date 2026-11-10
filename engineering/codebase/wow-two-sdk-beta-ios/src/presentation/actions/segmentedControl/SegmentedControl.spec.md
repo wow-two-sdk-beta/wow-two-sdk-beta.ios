@@ -10,7 +10,7 @@ Source: [SegmentedControl.swift](SegmentedControl.swift). Public import: `import
 - Each segment is a native button VoiceOver reads with the selected trait and "n of count" as its hint; the row is a container.
 - The pill slides with `motion.base` and jumps under Reduce Motion.
 - The control is 44 pt tall; long titles shrink to 80 % before truncating.
-- Disabled dims to 0.45.
+- Disabled dims to `states.disabledOpacity`.
 - Options are `SelectOption`s, so each title has a localized and a verbatim form ([SelectField.spec.md](../../forms/selectField/SelectField.spec.md)).
 
 ## `SegmentedControl<Value: Hashable>`

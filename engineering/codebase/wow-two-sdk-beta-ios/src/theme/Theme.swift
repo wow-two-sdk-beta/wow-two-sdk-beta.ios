@@ -12,6 +12,7 @@ public struct Theme: Sendable, Hashable, Identifiable {
     public var sizes: ThemeSizes
     public var elevation: ThemeElevation
     public var motion: ThemeMotion
+    public var states: ThemeStates
 
     public init(
         id: String,
@@ -21,7 +22,8 @@ public struct Theme: Sendable, Hashable, Identifiable {
         radii: ThemeRadii = .standard,
         sizes: ThemeSizes = .standard,
         elevation: ThemeElevation = .standard,
-        motion: ThemeMotion = .standard
+        motion: ThemeMotion = .standard,
+        states: ThemeStates = .standard
     ) {
         self.id = id
         self.colors = colors
@@ -31,6 +33,7 @@ public struct Theme: Sendable, Hashable, Identifiable {
         self.sizes = sizes
         self.elevation = elevation
         self.motion = motion
+        self.states = states
     }
 
     /// The fe sdk's default theme, token for token.

@@ -15,6 +15,7 @@ Public import: `import WoW2IosTheme` (or `WoW2Ios`).
 - A `ColorToken` resolves light or dark from the trait environment; `resolve(_:)` gives the value for tests.
 - Typography uses Dynamic Type text styles; a custom `fontName` scales `relativeTo:` its style.
 - `motion.animation(…, reduceMotion: true)` is `nil`, so animated components jump under Reduce Motion.
+- `scrim` / `scrimForeground` keep one value in both modes; `ThemeContrast` checks the pair with the scrim composited over white, the lightest picture.
 - `ThemeContrast.failures(theme)` lists every pair below WCAG AA (text 4.5, UI 3.0) in either mode; a shipped theme lists none.
 
 ## Tokens
@@ -22,6 +23,7 @@ Public import: `import WoW2IosTheme` (or `WoW2Ios`).
 | Group | Members | fe sdk source |
 |---|---|---|
 | `colors` surfaces | `background` `foreground` `card` `cardForeground` `popover` `popoverForeground` `field` `muted` `mutedForeground` `subtleForeground` `inverse` `inverseForeground` `border` `borderStrong` `input` `ring` | `--color-{kebab-name}` |
+| `colors` over media | `scrim` (black 60 %, both modes) `scrimForeground` (white) | none — iOS-only, for controls over a camera picture |
 | `colors` tones | `primary` `accent` `destructive` `info` `success` `warning`, each `base` `foreground` `soft` `softForeground` | `--color-{tone}[-foreground\|-soft\|-soft-foreground]` |
 | `typography` | `display` `title` `heading` `body` `label` `caption` `eyebrow` `mono` | `Heading` · `Text` · `LabelText` · `EyebrowText` · `CodeText` |
 | `spacing` | `unit` × `xxs` 0.5 · `xs` 1 · `sm` 2 · `md` 3 · `lg` 4 · `xl` 6 · `xxl` 8; `spacing(n)`; `ThemeDensity` | `--spacing` density presets |
@@ -29,12 +31,14 @@ Public import: `import WoW2IosTheme` (or `WoW2Ios`).
 | `sizes` | `controlSmall` 32 · `controlMedium` 44 · `controlLarge` 52 · `hairline` 1 · `ring` 2 · `avatarSmall` 32 · `avatarMedium` 40 · `avatarLarge` 56 · `avatarExtraLarge` 80 | Button and `Avatar` size presets |
 | `elevation` | `raised` · `overlay` | `shadow-*` |
 | `motion` | `fast` 0.15 · `base` 0.2 · `slow` 0.3 · `shimmer` 1.6 · `indeterminate` 1.4; `EasingToken.out` `.in` `.standard` | `--duration-*` · `--ease-*` · `--animate-shimmer` · `ProgressBar` slide |
+| `states` | `disabledOpacity` 0.45 · `pressedOpacity` 0.85 · `pressedScale` 0.97 · `pressedWashOpacity` 0.1 | `disabled:opacity-*` · `active:` · `bg-primary/10` |
 
 ## API
 
 | Member | Meaning |
 |---|---|
 | `Theme.with(id:_:)` | A copy with a new id and edited tokens. |
+| `RGBA.composited(over:)` | A translucent colour as seen over an opaque backdrop. |
 | `ThemeColors[tone]` | Reads or writes a tone family by `Tone`. |
 | `ThemeTypography.design(_:)` | Every role but `mono` in another design (`.rounded`, `.serif`). |
 | `View.wow2Theme(_:tintsControls:)` | Applies the theme below this view; `tintsControls` defaults to `true`. |
@@ -43,5 +47,5 @@ Public import: `import WoW2IosTheme` (or `WoW2Ios`).
 
 ## Verification
 
-- [ThemeTests.swift](../../tests/unit/theme/ThemeTests.swift): default tokens, contrast, hex, scheme resolution, density, motion, typography.
+- [ThemeTests.swift](../../tests/unit/theme/ThemeTests.swift): default tokens, contrast, hex, scheme resolution, density, motion, states, typography.
 - [AppearanceTests.swift](../../tests/unit/presentation/AppearanceTests.swift) `oneTokenRestylesEveryReader`.

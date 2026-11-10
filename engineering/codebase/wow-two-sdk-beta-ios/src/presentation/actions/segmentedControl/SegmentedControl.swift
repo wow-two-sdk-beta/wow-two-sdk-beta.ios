@@ -31,7 +31,7 @@ public struct SegmentedControlAppearance: Sendable, Hashable {
             height: theme.sizes.controlMedium,
             inset: theme.spacing.xxs,
             radius: theme.radii.md,
-            opacity: isEnabled ? 1 : 0.45
+            opacity: isEnabled ? 1 : theme.states.disabledOpacity
         )
     }
 }

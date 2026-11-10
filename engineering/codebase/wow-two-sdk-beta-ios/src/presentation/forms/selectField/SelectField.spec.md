@@ -8,7 +8,7 @@ Source: [SelectField.swift](SelectField.swift), [SelectOption.swift](SelectOptio
 
 - The whole row is one native `Menu` holding an inline `Picker`: the menu lists every option with a checkmark on the current one, and VoiceOver and Dynamic Type stay native.
 - VoiceOver reads the title as the label, the current option as the value and the description as the hint.
-- The trailing current option and the up-down chevron come from `SelectFieldAppearance.resolve(theme:isEnabled:)`; disabled dims to 0.45.
+- The trailing current option and the up-down chevron come from `SelectFieldAppearance.resolve(theme:isEnabled:)`; disabled dims to `states.disabledOpacity`.
 - The row paints the card fill, darkening to `muted` while pressed, so it sits in a `ListGroup` with separators.
 - Every `LocalizedStringKey` init has a verbatim twin: the title takes any `StringProtocol`, optional texts take `String?`, and no localization lookup runs — for strings an app resolves itself.
 - `SelectOption` is shared with `SegmentedControl`; its title has the same two forms.

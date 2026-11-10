@@ -44,6 +44,12 @@ public struct RGBA: Sendable, Hashable {
         RGBA(red: red, green: green, blue: blue, alpha: alpha)
     }
 
+    /// This colour drawn over the opaque `backdrop` — what the eye sees of a translucent fill.
+    public func composited(over backdrop: RGBA) -> RGBA {
+        func blend(_ top: Double, _ bottom: Double) -> Double { top * alpha + bottom * (1 - alpha) }
+        return RGBA(red: blend(red, backdrop.red), green: blend(green, backdrop.green), blue: blend(blue, backdrop.blue))
+    }
+
     /// WCAG relative luminance.
     public var luminance: Double {
         func linear(_ channel: Double) -> Double {

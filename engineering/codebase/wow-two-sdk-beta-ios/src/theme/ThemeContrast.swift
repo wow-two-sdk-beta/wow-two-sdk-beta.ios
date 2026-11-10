@@ -23,7 +23,8 @@ public enum ThemeContrast {
     }
 
     /// The pairs every theme must clear in both modes: surface text, each tone's solid and soft text, and the
-    /// field boundary and focus ring against the page.
+    /// field boundary and focus ring against the page, and
+    /// over-media text on the scrim laid over a white picture.
     public static func pairs(_ colors: ThemeColors) -> [Pair] {
         var pairs: [Pair] = []
         let surfaces: [(String, ColorToken)] = [
@@ -37,6 +38,12 @@ public enum ThemeContrast {
         pairs.append(Pair(name: "inverseForeground on inverse", foreground: colors.inverseForeground, background: colors.inverse, minimum: text))
         pairs.append(Pair(name: "input on field", foreground: colors.input, background: colors.field, minimum: ui))
         pairs.append(Pair(name: "ring on background", foreground: colors.ring, background: colors.background, minimum: ui))
+        // Over media the worst backdrop is the lightest picture: the scrim is checked composited over white.
+        let white = RGBA(red: 1, green: 1, blue: 1)
+        let scrimOverWhite = ColorToken(
+            light: colors.scrim.light.composited(over: white), dark: colors.scrim.dark.composited(over: white)
+        )
+        pairs.append(Pair(name: "scrimForeground on scrim", foreground: colors.scrimForeground, background: scrimOverWhite, minimum: text))
         for tone in Tone.allCases {
             let family = colors[tone]
             pairs.append(Pair(name: "\(tone).foreground on \(tone)", foreground: family.foreground, background: family.base, minimum: text))

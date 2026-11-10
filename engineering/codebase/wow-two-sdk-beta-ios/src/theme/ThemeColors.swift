@@ -46,6 +46,11 @@ public struct ThemeColors: Sendable, Hashable {
     public var input: ColorToken
     /// The focus indicator.
     public var ring: ColorToken
+    /// The translucent fill behind controls and text drawn over media — a camera viewfinder, a full-screen
+    /// picture. It keeps one value in both modes, since the picture, not the colour scheme, sets the backdrop.
+    public var scrim: ColorToken
+    /// Text and icons on `scrim`.
+    public var scrimForeground: ColorToken
 
     public var primary: ToneColors
     public var accent: ToneColors
@@ -62,6 +67,7 @@ public struct ThemeColors: Sendable, Hashable {
         muted: ColorToken, mutedForeground: ColorToken, subtleForeground: ColorToken,
         inverse: ColorToken, inverseForeground: ColorToken,
         border: ColorToken, borderStrong: ColorToken, input: ColorToken, ring: ColorToken,
+        scrim: ColorToken = ThemeColors.standardScrim, scrimForeground: ColorToken = ThemeColors.standardScrimForeground,
         primary: ToneColors, accent: ToneColors, destructive: ToneColors,
         info: ToneColors, success: ToneColors, warning: ToneColors
     ) {
@@ -81,6 +87,8 @@ public struct ThemeColors: Sendable, Hashable {
         self.borderStrong = borderStrong
         self.input = input
         self.ring = ring
+        self.scrim = scrim
+        self.scrimForeground = scrimForeground
         self.primary = primary
         self.accent = accent
         self.destructive = destructive
@@ -115,6 +123,11 @@ public struct ThemeColors: Sendable, Hashable {
 }
 
 extension ThemeColors {
+    /// The default `scrim`: black at 60 % in both modes.
+    public static let standardScrim = ColorToken("#00000099")
+    /// The default `scrimForeground`: white in both modes.
+    public static let standardScrimForeground = ColorToken("#ffffff")
+
     /// The fe sdk's default theme (`src/index.css` `@theme` and `.dark`), OKLCH values converted to sRGB hex.
     public static let standard = ThemeColors(
         background: ColorToken("#ffffff", "#09090b"),

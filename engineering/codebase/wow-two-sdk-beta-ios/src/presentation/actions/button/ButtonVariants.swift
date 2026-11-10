@@ -46,11 +46,11 @@ public struct ButtonAppearance: Sendable, Hashable {
         case .primary:
             background = colors.primary.base
             foreground = colors.primary.foreground
-            if isPressed { opacity = 0.85 }
+            if isPressed { opacity = theme.states.pressedOpacity }
         case .destructive:
             background = colors.destructive.base
             foreground = colors.destructive.foreground
-            if isPressed { opacity = 0.85 }
+            if isPressed { opacity = theme.states.pressedOpacity }
         case .secondary:
             background = isPressed ? colors.muted : colors.card
             foreground = colors.foreground
@@ -59,7 +59,7 @@ public struct ButtonAppearance: Sendable, Hashable {
             background = isPressed ? colors.primary.soft : nil
             foreground = colors.primary.softForeground
         }
-        if !isEnabled { opacity = 0.45 }
+        if !isEnabled { opacity = theme.states.disabledOpacity }
 
         var font = theme.typography.label
         font.weight = .semibold

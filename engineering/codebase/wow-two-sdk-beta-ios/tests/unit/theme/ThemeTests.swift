@@ -24,6 +24,24 @@ struct ThemeTests {
         #expect(failures.contains { $0.contains("primary.foreground on primary") })
     }
 
+    @Test func scrimKeepsOneValueInBothModes() {
+        let colors = Theme.standard.colors
+        #expect(colors.scrim.light == colors.scrim.dark)
+        #expect(abs(colors.scrim.light.alpha - 0x99 / 255.0) < 0.001)
+        #expect(colors.scrimForeground.resolve(.dark).hex == "#ffffff")
+    }
+
+    @Test func contrastChecksScrimOverWhitePicture() {
+        let faint = Theme.standard.with(id: "faint") { $0.colors.scrim = ColorToken("#00000020") }
+        #expect(ThemeContrast.failures(faint).contains { $0.contains("scrimForeground on scrim") })
+    }
+
+    @Test func compositingBlendsByAlpha() {
+        let grey = RGBA(hex: "#00000080").composited(over: RGBA(hex: "#ffffff"))
+        #expect(grey.alpha == 1)
+        #expect(abs(grey.red - (1 - 128.0 / 255)) < 0.001)
+    }
+
     @Test func contrastRatioMatchesWcag() {
         let ratio = ThemeContrast.ratio(RGBA(hex: "#000000"), RGBA(hex: "#ffffff"))
         #expect(abs(ratio - 21) < 0.01)
@@ -73,6 +91,14 @@ struct ThemeTests {
     @Test func reduceMotionDropsAnimation() {
         #expect(ThemeMotion.standard.animation(.base, reduceMotion: true) == nil)
         #expect(ThemeMotion.standard.animation(.base, reduceMotion: false) != nil)
+    }
+
+    @Test func statesDefaultToTheFeSdkValues() {
+        let states = Theme.standard.states
+        #expect(states.disabledOpacity == 0.45)
+        #expect(states.pressedOpacity == 0.85)
+        #expect(states.pressedScale == 0.97)
+        #expect(states.pressedWashOpacity == 0.1)
     }
 
     @Test func typographyDesignSkipsMono() {
