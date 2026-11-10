@@ -9,7 +9,7 @@ Every unbuilt item, grouped; top of each group = next. Shipped work lives in [`v
 | Feature | State | Spec |
 |---|---|---|
 | Theme tokens | shipped v0.1 | [Theme.spec.md](../codebase/wow-two-sdk-beta-ios/src/theme/Theme.spec.md) |
-| Themed components | shipped v0.1 (batch II in `0.0.2`) | specs beside each family in `src/presentation/` |
+| Themed components | shipped v0.1 | specs beside each family in `src/presentation/` |
 | API client | shipped v0.1 | [ApiClient.spec.md](../codebase/wow-two-sdk-beta-ios/src/foundation/http/ApiClient.spec.md) |
 | Build config | shipped v0.1 | [AppConfig.spec.md](../codebase/wow-two-sdk-beta-ios/src/foundation/config/AppConfig.spec.md) |
 | Logging | shipped v0.1 | [Log.spec.md](../codebase/wow-two-sdk-beta-ios/src/foundation/logger/Log.spec.md) |
@@ -43,8 +43,7 @@ Every unbuilt item, grouped; top of each group = next. Shipped work lives in [`v
 | Item | Type | Notes |
 |---|---|---|
 | StoreKit 2 store, purchase config and paywall | feature | Pose Coach `Purchases/*`; trigger: a second app that sells |
-| Runtime language choice | feature | Pose Coach `Localization/Services/AppLanguage.swift` |
-| Camera session, photo import and library save | feature | Pose Coach `Camera/*`; trigger: a second camera app |
+| Camera session and preview | feature | Pose Coach `Camera/Services/CameraSession.swift`, `CameraPreview.swift`; trigger: a second camera app |
 | Nearby peer transport | feature | Pose Coach `Duo/Services/*Transport.swift` |
 | Speech synthesis and recognition | feature | Pose Coach `Live/Services/CoachVoice.swift` |
 
