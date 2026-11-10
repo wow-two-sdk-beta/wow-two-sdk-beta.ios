@@ -10,7 +10,7 @@ package `WoW2SdkBetaIos` (iOS 17+, Swift 6).
 | `WoW2Ios` | everything below, one import |
 | `WoW2IosFoundation` | `AppConfig` · `ApiClient` · `Log` · `AppLanguage` |
 | `WoW2IosTheme` | `Theme` and its design tokens |
-| `WoW2IosPresentation` | buttons · icon buttons · option tiles · cards · media card · badge · avatar · bullet list · list group · rows (switch, select, choice) · text input · banner · toast · spinner · loading and empty states · skeleton · media pill · action bar · sheet header |
+| `WoW2IosPresentation` | buttons · icon buttons · option tiles · cards · media card · badge · avatar · bullet list · list group · rows (switch, select, choice) · text input · banner · toast · spinner · loading and empty states · skeleton · media pill · action bar · top bar · sheet header |
 | `WoW2IosCapture` | hardware shutter · photo import · library save · JPEG export — imported on its own, never through `WoW2Ios` |
 
 ## Install

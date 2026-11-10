@@ -8,11 +8,11 @@ public struct OptionTileStrip<Data: RandomAccessCollection, Value: Hashable, Lea
 where Data.Element: Identifiable {
     private let data: Data
     @Binding private var selection: Value
-    private let value: (Data.Element) -> Value
-    private let title: (Data.Element) -> Text
+    private let value: @MainActor (Data.Element) -> Value
+    private let title: @MainActor (Data.Element) -> Text
     private let titlePosition: OptionTileTitlePosition
     private let leading: Leading
-    private let art: (Data.Element) -> Art
+    private let art: @MainActor (Data.Element) -> Art
 
     @Environment(\.wow2Theme) private var theme
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -23,11 +23,11 @@ where Data.Element: Identifiable {
     public init(
         _ data: Data,
         selection: Binding<Value>,
-        value: @escaping (Data.Element) -> Value,
-        title: @escaping (Data.Element) -> LocalizedStringKey,
+        value: @escaping @MainActor (Data.Element) -> Value,
+        title: @escaping @MainActor (Data.Element) -> LocalizedStringKey,
         titlePosition: OptionTileTitlePosition = .below,
         @ViewBuilder leading: () -> Leading,
-        @ViewBuilder art: @escaping (Data.Element) -> Art
+        @ViewBuilder art: @escaping @MainActor (Data.Element) -> Art
     ) {
         self.init(
             data: data, selection: selection, value: value, title: { Text(title($0)) },
@@ -40,11 +40,11 @@ where Data.Element: Identifiable {
     public init(
         _ data: Data,
         selection: Binding<Value>,
-        value: @escaping (Data.Element) -> Value,
-        title: @escaping (Data.Element) -> String,
+        value: @escaping @MainActor (Data.Element) -> Value,
+        title: @escaping @MainActor (Data.Element) -> String,
         titlePosition: OptionTileTitlePosition = .below,
         @ViewBuilder leading: () -> Leading,
-        @ViewBuilder art: @escaping (Data.Element) -> Art
+        @ViewBuilder art: @escaping @MainActor (Data.Element) -> Art
     ) {
         self.init(
             data: data, selection: selection, value: value, title: { Text(verbatim: title($0)) },
@@ -55,11 +55,11 @@ where Data.Element: Identifiable {
     private init(
         data: Data,
         selection: Binding<Value>,
-        value: @escaping (Data.Element) -> Value,
-        title: @escaping (Data.Element) -> Text,
+        value: @escaping @MainActor (Data.Element) -> Value,
+        title: @escaping @MainActor (Data.Element) -> Text,
         titlePosition: OptionTileTitlePosition,
         leading: Leading,
-        art: @escaping (Data.Element) -> Art
+        art: @escaping @MainActor (Data.Element) -> Art
     ) {
         self.data = data
         self._selection = selection
@@ -107,10 +107,10 @@ extension OptionTileStrip where Leading == EmptyView {
     public init(
         _ data: Data,
         selection: Binding<Value>,
-        value: @escaping (Data.Element) -> Value,
-        title: @escaping (Data.Element) -> LocalizedStringKey,
+        value: @escaping @MainActor (Data.Element) -> Value,
+        title: @escaping @MainActor (Data.Element) -> LocalizedStringKey,
         titlePosition: OptionTileTitlePosition = .below,
-        @ViewBuilder art: @escaping (Data.Element) -> Art
+        @ViewBuilder art: @escaping @MainActor (Data.Element) -> Art
     ) {
         self.init(
             data, selection: selection, value: value, title: title, titlePosition: titlePosition,
@@ -123,10 +123,10 @@ extension OptionTileStrip where Leading == EmptyView {
     public init(
         _ data: Data,
         selection: Binding<Value>,
-        value: @escaping (Data.Element) -> Value,
-        title: @escaping (Data.Element) -> String,
+        value: @escaping @MainActor (Data.Element) -> Value,
+        title: @escaping @MainActor (Data.Element) -> String,
         titlePosition: OptionTileTitlePosition = .below,
-        @ViewBuilder art: @escaping (Data.Element) -> Art
+        @ViewBuilder art: @escaping @MainActor (Data.Element) -> Art
     ) {
         self.init(
             data, selection: selection, value: value, title: title, titlePosition: titlePosition,

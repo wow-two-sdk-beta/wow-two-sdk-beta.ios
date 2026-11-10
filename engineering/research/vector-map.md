@@ -17,7 +17,7 @@
 | `auth` | backlog | token store in Keychain, refresh, sign-in with Apple; pairs with Identity |
 | `query` | backlog | cached async loads with refresh — an `@Observable` resource over `ApiClient` |
 | `formsEngine` / `validators` | backlog | field state + server `FieldError` mapping onto `TextInput` |
-| `presentation/*` | 25 families shipped (`0.0.3`: spinner, loading state, icon buttons, media pill, option tiles, choice field, media card, bullet list, action bar) | next: confirm dialog |
+| `presentation/*` | 26 families shipped (`0.0.3`: spinner, loading state, icon buttons, media pill, option tiles, choice field, media card, bullet list, action bar, top bar) | next: confirm dialog |
 
 ## From Pose Coach (`ventures.pose-coach`, `apps/ios/PoseCoach`)
 

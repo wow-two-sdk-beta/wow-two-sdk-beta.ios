@@ -40,6 +40,9 @@ Every unbuilt item, grouped; top of each group = next. Shipped work lives in [`v
 | Render-friendly `SelectField`, `Spinner` and `OptionTileStrip` | engineering | `ImageRenderer` draws the native `Menu`, `ProgressView` and `ScrollView` as placeholders or blank |
 | Decorative alphas as tokens | engineering | skeleton shimmer 0.55, progress track 0.4, banner border 0.35, segmented thumb border 0.5 are literals |
 | Selection-ring width and bullet-dot size tokens | engineering | option tiles read `sizes.ring`, bullets `spacing(1.5)` |
+| `OptionTileStrip` action mode | feature | tiles that run an action with no selection, plus a per-tile hint; Pose Coach lays out `OptionTile`s by hand in its eye-style picker |
+| Hero typography role | feature | a role above `display` for a short code or number; Pose Coach's 52 pt shoot code stays native |
+| Title 3 typography role | feature | between `title` and `heading`; Pose Coach reads `heading` at regular weight for a lead paragraph |
 
 ## Extractions
 

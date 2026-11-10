@@ -13,7 +13,7 @@ Source: [IconButtonVariants.swift](IconButtonVariants.swift), [IconButtonStyle.s
 - Diameters are `sizes.controlSmall` · `controlMedium` · `controlLarge`; the hit target is never under `controlMedium` (44 pt). Glyphs use `label` · `heading` · `title`, semibold, in Dynamic Type.
 - Pressed dims filled fills to `states.pressedOpacity`; `.disabled` dims to `states.disabledOpacity`. The press and toggle animate at `motion.fast`, not at all under Reduce Motion.
 - Selected (`ToggleIconButton` on): `ghost` / `soft` fill `{selectedTone}.soft` with `{selectedTone}.softForeground`; `filled` and `overMedia` fill `{selectedTone}.base` with `{selectedTone}.foreground`.
-- `ToggleIconButton` swaps `systemImage` for `selectedSystemImage`, plays the selection haptic, and carries the `.isToggle` trait (plus `.isSelected` when on) with the value "On" / "Off".
+- `ToggleIconButton` swaps `systemImage` for `selectedSystemImage`, plays the selection haptic, and carries the `.isSelected` trait when on, which VoiceOver speaks in the device language; it sets no value text, so an app has nothing to translate.
 - Replaces Pose Coach's `ControlButtonStyle` (`.icon(.overMedia)`), `FavoriteStar` (`ToggleIconButton`, `star` / `star.fill`, `.overMedia`, `selectedTone: .warning`) and icon-only toolbar buttons (`.ghost`).
 - Every `LocalizedStringKey` init has a verbatim `StringProtocol` twin.
 

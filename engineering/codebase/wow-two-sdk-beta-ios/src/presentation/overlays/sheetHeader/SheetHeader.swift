@@ -7,35 +7,43 @@ public struct SheetHeader: View {
     private let title: Text
     private let description: Text?
     private let showsClose: Bool
+    private let closeLabel: Text
     private let onClose: (@MainActor () -> Void)?
 
     @Environment(\.wow2Theme) private var theme
     @Environment(\.dismiss) private var dismiss
 
-    /// - Parameter onClose: Runs instead of the environment's `dismiss`.
+    /// - Parameters:
+    ///   - closeLabel: What VoiceOver reads for the close button.
+    ///   - onClose: Runs instead of the environment's `dismiss`.
     public init(
         _ title: LocalizedStringKey,
         description: LocalizedStringKey? = nil,
         showsClose: Bool = true,
+        closeLabel: LocalizedStringKey = "Close",
         onClose: (@MainActor () -> Void)? = nil
     ) {
         self.title = Text(title)
         self.description = description.map { Text($0) }
         self.showsClose = showsClose
+        self.closeLabel = Text(closeLabel)
         self.onClose = onClose
     }
 
-    /// Renders `title` and `description` verbatim, with no localization lookup.
+    /// Renders `title`, `description` and `closeLabel` verbatim, with no localization lookup; a `nil` `closeLabel`
+    /// reads "Close".
     @_disfavoredOverload
     public init<Title: StringProtocol>(
         _ title: Title,
         description: String? = nil,
         showsClose: Bool = true,
+        closeLabel: String? = nil,
         onClose: (@MainActor () -> Void)? = nil
     ) {
         self.title = Text(title)
         self.description = description.map { Text(verbatim: $0) }
         self.showsClose = showsClose
+        self.closeLabel = closeLabel.map { Text(verbatim: $0) } ?? Text("Close")
         self.onClose = onClose
     }
 
@@ -67,7 +75,7 @@ public struct SheetHeader: View {
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
-                .accessibilityLabel(Text("Close"))
+                .accessibilityLabel(closeLabel)
                 .padding(.top, -theme.spacing.sm)
                 .padding(.trailing, -theme.spacing.sm)
             }

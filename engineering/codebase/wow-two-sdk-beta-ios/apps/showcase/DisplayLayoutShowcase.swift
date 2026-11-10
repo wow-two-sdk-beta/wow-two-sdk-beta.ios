@@ -1,7 +1,7 @@
 import SwiftUI
 import WoW2Ios
 
-/// `MediaCard`, `BulletList` and `ActionBar` in their states, without scroll or navigation chrome.
+/// `MediaCard`, `BulletList`, `ActionBar` and `TopBar` in their states, without scroll or navigation chrome.
 public struct DisplayLayoutShowcase: View {
     @State private var isFavorite = true
 
@@ -53,6 +53,31 @@ public struct DisplayLayoutShowcase: View {
             ActionBar(variant: .card, axis: .horizontal) {
                 Button("Cancel") {}.buttonStyle(.theme(.secondary, isFullWidth: true))
                 Button("Save") {}.buttonStyle(.theme(.primary, isFullWidth: true))
+            }
+
+            SectionHeader("Top bar", subtitle: "TopBar · both slots, subtitle, one slot, uneven slots")
+            TopBar("Person 1 of 2", isInset: false) {
+                IconButton(systemImage: "xmark", label: "Close") {}
+            } trailing: {
+                IconButton(systemImage: "arrow.triangle.2.circlepath.camera", label: "Switch camera") {}
+                    .disabled(true)
+            }
+            TopBar("Golden hour", subtitle: "Duo collage", isInset: false) {
+                IconButton(systemImage: "xmark", label: "Close") {}
+            } trailing: {
+                Menu("Retake") {
+                    Button("Person 1") {}
+                    Button("Person 2") {}
+                }
+            }
+            TopBar(String("Settings"), isInset: false, trailing: {
+                IconButton(systemImage: "checkmark", label: "Done", variant: .filled) {}
+            })
+            TopBar("A long title that truncates before it reaches a slot", isInset: false) {
+                IconButton(systemImage: "chevron.left", label: "Back") {}
+            } trailing: {
+                IconButton(systemImage: "square.and.arrow.up", label: "Share") {}
+                IconButton(systemImage: "ellipsis", label: "More") {}
             }
         }
     }

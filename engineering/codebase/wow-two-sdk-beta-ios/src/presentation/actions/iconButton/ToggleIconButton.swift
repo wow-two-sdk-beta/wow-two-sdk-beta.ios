@@ -78,7 +78,6 @@ public struct ToggleIconButton: View {
         }
         .buttonStyle(IconButtonStyle(variant, size: size, isSelected: isOn, selectedTone: selectedTone))
         .sensoryFeedback(.selection, trigger: isOn)
-        .accessibilityAddTraits(isOn ? [.isToggle, .isSelected] : .isToggle)
-        .accessibilityValue(isOn ? Text("On") : Text("Off"))
+        .accessibilityAddTraits(isOn ? .isSelected : [])
     }
 }

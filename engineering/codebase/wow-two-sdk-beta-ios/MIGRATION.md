@@ -16,7 +16,9 @@ Additive: no call site written against `0.0.2` changes. Pin `exact: "0.0.3"`.
 | `display` | `MediaCard` (static, tappable, or a `NavigationLink(value:)`; an accessory on a media corner), `BulletList` (dot, symbol or number markers). Specs beside each |
 | `feedback` | `Spinner`, `LoadingState`, `MediaPill`. Specs beside each |
 | `forms` | `ChoiceField`, the radio row of a `ListGroup`. [Spec](src/presentation/forms/choiceField/ChoiceField.spec.md) |
-| `layout` | New family. `ActionBar` and `.actionBar { … }`, a bottom bar over the safe area. [Spec](src/presentation/layout/actionBar/ActionBar.spec.md) |
+| `layout` | New family. `ActionBar` and `.actionBar { … }`, a bottom bar over the safe area; `TopBar`, a centred title between a leading and a trailing slot. Specs beside each |
+| `SheetHeader` | `closeLabel:` sets what VoiceOver reads for the close button |
+| `Banner` | `systemImage:` replaces the tone's glyph; `dismissLabel:` sets what VoiceOver reads for the close button |
 | `WoW2IosFoundation` | `AppLanguage`: a runtime interface language over JSON catalogues, with a persisted choice. [Spec](src/foundation/localization/AppLanguage.spec.md) |
 | `WoW2IosCapture` | New product, outside the umbrella. `.hardwareShutter(isEnabled:onPress:)` and `HardwareShutterPolicy`; `PhotoImport`, `ImportedPhoto`, `PhotoLibrary`, `JpegExport`, `UIImage.uprightImage(maxDimension:)`. Specs in [`shutter/`](src/capture/shutter/HardwareShutter.spec.md) and [`photo/`](src/capture/photo/Photo.spec.md) |
 
@@ -24,6 +26,8 @@ Additive: no call site written against `0.0.2` changes. Pin `exact: "0.0.3"`.
 |---|---|
 | `Theme.init` | gains `states: ThemeStates = .standard` |
 | `ThemeColors.init` | gains defaulted `scrim` and `scrimForeground` |
+| `SheetHeader.init` | gains `closeLabel` before `onClose` |
+| `Banner.init` | gains `systemImage` after `tone`, and `dismissLabel` before `onDismiss` |
 
 - `WoW2IosCapture` is its own import and its own package product: add it to the target beside `WoW2Ios`. An app that
   saves to Photos still declares `NSPhotoLibraryAddUsageDescription`.
@@ -31,6 +35,8 @@ Additive: no call site written against `0.0.2` changes. Pin `exact: "0.0.3"`.
 - `AppLanguage` takes a `Configuration`: the app's languages, its bundle, the catalogue file name per code, and the
   `UserDefaults` key. An app keeps its catalogue files.
 - A disabled or pressed control now reads `theme.states`; the standard values equal the literals they replace.
+- An app with its own string catalogue passes `closeLabel` and `dismissLabel`: the sdk's own "Close" and "Dismiss"
+  resolve from the app bundle and stay English otherwise.
 
 ## 0.0.2 — second component batch
 

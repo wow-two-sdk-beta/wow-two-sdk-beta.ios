@@ -60,6 +60,8 @@ public struct BannerAppearance: Sendable, Hashable {
 /// optional dismiss button — the fe sdk's `Banner` / `Alert`.
 public struct Banner: View {
     private let tone: BannerTone
+    private let systemImage: String?
+    private let dismissLabel: Text
     private let title: Text?
     private let message: Text
     private let actionTitle: Text?
@@ -69,47 +71,60 @@ public struct Banner: View {
     @Environment(\.wow2Theme) private var theme
 
     /// - Parameters:
+    ///   - systemImage: Replaces the tone's glyph.
     ///   - actionTitle: Shows a text button below the message when `action` is set too.
+    ///   - dismissLabel: What VoiceOver reads for the close button.
     ///   - onDismiss: Shows a close button that runs it.
     public init(
         tone: BannerTone = .info,
+        systemImage: String? = nil,
         title: LocalizedStringKey? = nil,
         message: LocalizedStringKey,
         actionTitle: LocalizedStringKey? = nil,
         action: (@MainActor () -> Void)? = nil,
+        dismissLabel: LocalizedStringKey = "Dismiss",
         onDismiss: (@MainActor () -> Void)? = nil
     ) {
         self.init(
-            tone: tone, title: title.map { Text($0) }, text: Text(message), actionTitle: actionTitle.map { Text($0) },
-            action: action, onDismiss: onDismiss
+            tone: tone, systemImage: systemImage, title: title.map { Text($0) }, text: Text(message),
+            actionTitle: actionTitle.map { Text($0) }, action: action, dismissLabel: Text(dismissLabel),
+            onDismiss: onDismiss
         )
     }
 
-    /// Renders `title`, `message` and `actionTitle` verbatim, with no localization lookup.
+    /// Renders `title`, `message`, `actionTitle` and `dismissLabel` verbatim, with no localization lookup; a `nil`
+    /// `dismissLabel` reads "Dismiss".
     @_disfavoredOverload
     public init<Message: StringProtocol>(
         tone: BannerTone = .info,
+        systemImage: String? = nil,
         title: String? = nil,
         message: Message,
         actionTitle: String? = nil,
         action: (@MainActor () -> Void)? = nil,
+        dismissLabel: String? = nil,
         onDismiss: (@MainActor () -> Void)? = nil
     ) {
         self.init(
-            tone: tone, title: title.map { Text(verbatim: $0) }, text: Text(message),
-            actionTitle: actionTitle.map { Text(verbatim: $0) }, action: action, onDismiss: onDismiss
+            tone: tone, systemImage: systemImage, title: title.map { Text(verbatim: $0) }, text: Text(message),
+            actionTitle: actionTitle.map { Text(verbatim: $0) }, action: action,
+            dismissLabel: dismissLabel.map { Text(verbatim: $0) } ?? Text("Dismiss"), onDismiss: onDismiss
         )
     }
 
     private init(
         tone: BannerTone,
+        systemImage: String?,
         title: Text?,
         text: Text,
         actionTitle: Text?,
         action: (@MainActor () -> Void)?,
+        dismissLabel: Text,
         onDismiss: (@MainActor () -> Void)?
     ) {
         self.tone = tone
+        self.systemImage = systemImage
+        self.dismissLabel = dismissLabel
         self.title = title
         self.message = text
         self.actionTitle = actionTitle
@@ -122,7 +137,7 @@ public struct Banner: View {
         let shape = RoundedRectangle(cornerRadius: look.radius, style: .continuous)
 
         HStack(alignment: .top, spacing: theme.spacing.sm) {
-            if let systemImage = tone.systemImage {
+            if let systemImage = systemImage ?? tone.systemImage {
                 Image(systemName: systemImage)
                     .font(theme.typography.label.font)
                     .foregroundStyle(look.accent.color)
@@ -166,7 +181,7 @@ public struct Banner: View {
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
-                .accessibilityLabel(Text("Dismiss"))
+                .accessibilityLabel(dismissLabel)
                 .padding(-theme.spacing.md)
             }
         }

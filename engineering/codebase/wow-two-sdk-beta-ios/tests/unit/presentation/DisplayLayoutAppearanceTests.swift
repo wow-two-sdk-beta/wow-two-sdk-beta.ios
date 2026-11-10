@@ -119,4 +119,34 @@ struct DisplayLayoutAppearanceTests {
         #expect(look.horizontalPadding == brand.spacing.lg)
         #expect(look != ActionBarAppearance.resolve(theme: theme))
     }
+
+    // MARK: TopBar
+
+    @Test func topBarReadsTextAndMetricTokens() {
+        let look = TopBarAppearance.resolve(theme: theme)
+        #expect(look.title == theme.colors.foreground)
+        #expect(look.titleFont == theme.typography.heading)
+        #expect(look.subtitle == theme.colors.mutedForeground)
+        #expect(look.subtitleFont == theme.typography.caption)
+        #expect(look.titleSpacing == theme.spacing.xxs)
+        #expect(look.slotSpacing == theme.spacing.sm)
+        #expect(look.minHeight == theme.sizes.controlMedium)
+        #expect(look.minHeight >= 44)
+        #expect(look.horizontalPadding == theme.spacing.lg)
+    }
+
+    @Test func topBarDropsPaddingWhenNotInset() {
+        let look = TopBarAppearance.resolve(theme: theme, isInset: false)
+        #expect(look.horizontalPadding == 0)
+        #expect(look.slotSpacing == theme.spacing.sm)
+    }
+
+    @Test func brandRestylesTopBar() {
+        let look = TopBarAppearance.resolve(theme: brand)
+        #expect(look.titleFont.design == .rounded)
+        #expect(look.subtitleFont.design == .rounded)
+        #expect(look.horizontalPadding == brand.spacing.lg)
+        #expect(look.slotSpacing > TopBarAppearance.resolve(theme: theme).slotSpacing)
+        #expect(look != TopBarAppearance.resolve(theme: theme))
+    }
 }

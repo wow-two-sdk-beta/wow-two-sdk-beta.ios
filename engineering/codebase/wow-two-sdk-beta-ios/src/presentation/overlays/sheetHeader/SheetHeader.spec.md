@@ -18,6 +18,7 @@ Source: [SheetHeader.swift](SheetHeader.swift). Public import: `import WoW2IosPr
 | `title` | `LocalizedStringKey` | — | The sheet's title. |
 | `description` | `LocalizedStringKey?` | `nil` | A muted line below. |
 | `showsClose` | `Bool` | `true` | Hides the close button for a sheet that must be answered. |
+| `closeLabel` | `LocalizedStringKey` / `String?` | `"Close"` | What VoiceOver reads for the close button; an app with its own catalogue passes its text. |
 | `onClose` | `(@MainActor () -> Void)?` | `nil` | Runs instead of `dismiss`. |
 
 ## Verification
