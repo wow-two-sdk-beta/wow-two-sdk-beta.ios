@@ -5,10 +5,11 @@
 Consumer-facing changes per tagged version, newest first. Pin `exact:`; every tag may break, and its entry here says
 how to move.
 
-## 0.0.4 — Leading views and shutter observations
+## 0.0.4 — Leading views, shutter observations and JSON storage
 
 - `ListGroupItem` and `ChoiceField` accept a decorative `leading:` view. Existing symbol initializers keep their layout. The square slot follows the new `ThemeSizes.listRowLeading` token, which defaults to 30 pt.
 - `hardwareShutter(isEnabled:onPress:onEvent:)` reports each phase the system delivers, including ignored phases, via `HardwareShutterEvent`. The two-argument modifier remains available.
+- `JsonFileStore(directory:fileName:defaultValue:)` is a Foundation actor for atomic persistence of one Codable value. A load preserves unreadable JSON beside the original file before restoring the default.
 
 ## 0.0.3 — Pose Coach extractions
 
