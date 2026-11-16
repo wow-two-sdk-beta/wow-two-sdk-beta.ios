@@ -59,6 +59,7 @@ public struct ShowcaseGallery: View {
     @State private var isLoading = true
     @State private var isSheetShown = false
     @State private var language = "en"
+    @State private var voiceMode = "guidance"
     @State private var quality = 1
     @State private var period = "week"
     @State private var isBannerShown = true
@@ -160,6 +161,13 @@ public struct ShowcaseGallery: View {
                 )
                 SwitchField(String("Haptics"), systemImage: "hand.tap", isOn: $isOn)
                 ListGroupItem(String("Version"), systemImage: "info.circle") { Text(verbatim: "0.0.2") }
+            }
+
+            ListGroup("Long selection") {
+                SelectField("Voice mode", systemImage: "waveform", selection: $voiceMode, options: [
+                    SelectOption("Guidance and spoken commands together", value: "guidance"),
+                    SelectOption("Off", value: "off"),
+                ])
             }
 
             ListGroup("People", separator: .inset) {

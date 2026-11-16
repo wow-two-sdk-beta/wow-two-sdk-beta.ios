@@ -5,6 +5,10 @@
 Consumer-facing changes per tagged version, newest first. Pin `exact:`; every tag may break, and its entry here says
 how to move.
 
+## 0.0.5 — Long selection values
+
+- `SelectField` places values that do not fit beside their label underneath it, with up to two lines. Accessibility text sizes always use the stacked layout. No call sites change.
+
 ## 0.0.4 — Leading views, shutter observations and JSON storage
 
 - `ListGroupItem` and `ChoiceField` accept a decorative `leading:` view. Existing symbol initializers keep their layout. The square slot follows the new `ThemeSizes.listRowLeading` token, which defaults to 30 pt.

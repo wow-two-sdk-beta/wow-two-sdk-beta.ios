@@ -1,7 +1,7 @@
 import SwiftUI
 import WoW2IosTheme
 
-/// What a `SelectField` row draws beside its label, resolved from the theme alone.
+/// How a `SelectField` draws the selected option and its indicator, resolved from the theme alone.
 public struct SelectFieldAppearance: Sendable, Hashable {
     /// The current option's title.
     public var value: ColorToken
@@ -67,42 +67,134 @@ public struct SelectField<Value: Hashable>: View {
         let look = SelectFieldAppearance.resolve(theme: theme, isEnabled: isEnabled)
         let current = options.first { $0.value == selection }
 
-        Menu {
-            Picker(selection: $selection) {
-                ForEach(options) { option in
-                    if let systemImage = option.systemImage {
-                        Label { option.title } icon: { Image(systemName: systemImage) }
-                            .tag(option.value)
-                    } else {
-                        option.title.tag(option.value)
+        // Size the visible row in SwiftUI and layer its native menu on top. The menu can host its label
+        // in a separate view graph, where trying multiple sizes of a compound label breaks rendering.
+        SelectFieldLabel(title: title, description: description, systemImage: systemImage,
+                         value: current?.title, appearance: look)
+            .accessibilityHidden(true)
+            .background(theme.colors.card.color)
+            .overlay {
+                Menu {
+                    Picker(selection: $selection) {
+                        ForEach(options) { option in
+                            if let systemImage = option.systemImage {
+                                Label { option.title } icon: { Image(systemName: systemImage) }
+                                    .tag(option.value)
+                            } else {
+                                option.title.tag(option.value)
+                            }
+                        }
+                    } label: {
+                        title
                     }
+                    .pickerStyle(.inline)
+                } label: {
+                    Color.clear
+                        .contentShape(Rectangle())
                 }
-            } label: {
-                title
+                .menuStyle(.button)
+                .buttonStyle(SelectFieldPressStyle())
+                .accessibilityLabel(title)
+                .accessibilityValue(current?.title ?? Text(verbatim: ""))
+                .accessibilityHint(description ?? Text(verbatim: ""))
             }
-            .pickerStyle(.inline)
-        } label: {
-            HStack(spacing: theme.spacing.md) {
-                RowLabel(title: title, description: description, systemImage: systemImage)
-                Spacer(minLength: theme.spacing.sm)
-                if let current {
-                    current.title
-                        .font(look.font.font)
-                        .foregroundStyle(look.value.color)
-                        .lineLimit(1)
-                }
-                Image(systemName: "chevron.up.chevron.down")
-                    .font(.footnote.weight(.semibold))
-                    .foregroundStyle(look.indicator.color)
+            .overlay(alignment: .leading) {
+                // The row reports the common title offset independently of the native menu's view graph.
+                let inset = theme.spacing.lg + (systemImage == nil ? 0 : theme.sizes.listRowLeading + theme.spacing.md)
+                Color.clear
+                    .frame(width: 0, height: 0)
+                    .alignmentGuide(.leading) { _ in -inset }
+                    .anchorPreference(key: RowTitleLeadingKey.self, value: .leading) { [$0] }
+                    .allowsHitTesting(false)
                     .accessibilityHidden(true)
             }
-            .rowPadding(theme)
-            .opacity(look.opacity)
+    }
+}
+
+private struct SelectFieldPressStyle: ButtonStyle {
+    @Environment(\.wow2Theme) private var theme
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .background(configuration.isPressed ? theme.colors.muted.color.opacity(0.4) : .clear)
+    }
+}
+
+/// The visible row underlying the native selection menu.
+struct SelectFieldLabel: View {
+    let title: Text
+    let description: Text?
+    let systemImage: String?
+    let value: Text?
+    let appearance: SelectFieldAppearance
+
+    @Environment(\.wow2Theme) private var theme
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    var body: some View {
+        HStack(spacing: theme.spacing.md) {
+            if let systemImage {
+                RowIconTile(systemImage: systemImage)
+            }
+            arrangement
         }
-        .menuStyle(.button)
-        .buttonStyle(RowPressStyle())
-        .accessibilityLabel(title)
-        .accessibilityValue(current?.title ?? Text(verbatim: ""))
-        .accessibilityHint(description ?? Text(verbatim: ""))
+        .rowPadding(theme)
+        .opacity(appearance.opacity)
+    }
+
+    @ViewBuilder
+    private var arrangement: some View {
+        if let value {
+            if dynamicTypeSize.isAccessibilitySize {
+                stacked(value: value)
+            } else {
+                ViewThatFits(in: .horizontal) {
+                    inline(value: value)
+                    stacked(value: value)
+                }
+            }
+        } else {
+            inline(value: nil)
+        }
+    }
+
+    private func inline(value: Text?) -> some View {
+        HStack(spacing: theme.spacing.md) {
+            RowTitle(title: title, description: description)
+                .fixedSize(horizontal: value != nil, vertical: false)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            if let value {
+                styledValue(value)
+                    .lineLimit(1)
+                    .fixedSize(horizontal: true, vertical: false)
+            }
+            indicator
+        }
+    }
+
+    private func stacked(value: Text) -> some View {
+        VStack(alignment: .leading, spacing: theme.spacing.xxs) {
+            RowTitle(title: title, description: description)
+            HStack(alignment: .lastTextBaseline, spacing: theme.spacing.md) {
+                styledValue(value)
+                    .lineLimit(2)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                indicator
+            }
+        }
+    }
+
+    private func styledValue(_ value: Text) -> some View {
+        value
+            .font(appearance.font.font)
+            .foregroundStyle(appearance.value.color)
+    }
+
+    private var indicator: some View {
+        Image(systemName: "chevron.up.chevron.down")
+            .font(.footnote.weight(.semibold))
+            .foregroundStyle(appearance.indicator.color)
+            .accessibilityHidden(true)
     }
 }

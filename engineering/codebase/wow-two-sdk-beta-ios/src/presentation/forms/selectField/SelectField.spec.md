@@ -9,7 +9,8 @@ Source: [SelectField.swift](SelectField.swift), [SelectOption.swift](SelectOptio
 - The whole row is one native `Menu` holding an inline `Picker`: the menu lists every option with a checkmark on the current one, and VoiceOver and Dynamic Type stay native.
 - VoiceOver reads the title as the label, the current option as the value and the description as the hint.
 - The trailing current option and the up-down chevron come from `SelectFieldAppearance.resolve(theme:isEnabled:)`; disabled dims to `states.disabledOpacity`.
-- The row paints the card fill, darkening to `muted` while pressed, so it sits in a `ListGroup` with separators.
+- The current option stays beside the title when it fits on one line. When space is tight, it moves below the title and wraps to two lines. Accessibility Dynamic Type sizes always stack it.
+- The row paints the card fill and tints it with `muted` while pressed, so it sits in a `ListGroup` with separators.
 - Every `LocalizedStringKey` init has a verbatim twin: the title takes any `StringProtocol`, optional texts take `String?`, and no localization lookup runs — for strings an app resolves itself.
 - `SelectOption` is shared with `SegmentedControl`; its title has the same two forms.
 
@@ -34,4 +35,5 @@ Source: [SelectField.swift](SelectField.swift), [SelectOption.swift](SelectOptio
 ## Verification
 
 - [AppearanceTests.swift](../../../../tests/unit/presentation/AppearanceTests.swift) `selectFieldReadsMutedValue`.
-- Rendered in the gallery ([RenderTests.swift](../../../../tests/unit/presentation/RenderTests.swift)); `ImageRenderer` draws the native menu as a blank placeholder, as it does the switch.
+- [SelectionLayoutTests.swift](../../../../tests/unit/presentation/SelectionLayoutTests.swift) renders standalone labels at different widths and text sizes.
+- Rendered in the gallery ([RenderTests.swift](../../../../tests/unit/presentation/RenderTests.swift)); the native menu appears as a placeholder in `ImageRenderer`.
