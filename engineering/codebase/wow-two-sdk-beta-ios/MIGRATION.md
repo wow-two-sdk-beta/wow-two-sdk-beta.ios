@@ -5,6 +5,12 @@
 Consumer-facing changes per tagged version, newest first. Pin `exact:`; every tag may break, and its entry here says
 how to move.
 
+## 0.0.8 — Conditional HTTP resources
+
+- `ApiClient.conditionalGet` sends the previous ETag and distinguishes an unchanged resource from a new response.
+- `CachedResource` stores a validated response and its ETag in one atomic disk snapshot. Supply validation before
+  adopting new content that depends on other files. [Spec](src/foundation/http/ApiClient.spec.md)
+
 ## 0.0.7 — Native sign-in and sequence video
 
 - Add `WoW2IosAuth` to a native app to open the system sign-in browser, store verified credentials in Keychain and

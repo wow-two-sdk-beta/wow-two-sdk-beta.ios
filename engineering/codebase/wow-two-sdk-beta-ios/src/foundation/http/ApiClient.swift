@@ -57,21 +57,55 @@ public struct ApiClient: Sendable {
     /// Sends `request` and decodes the success envelope's `data` as `T`.
     public func send<T>(_ request: ApiRequest<T>) async -> ApiResult<T> {
         let label = "\(request.method.rawValue) \(UrlRedaction.path(of: request.path))"
+        switch await exchange(request, label: label) {
+        case .success(let (data, response)):
+            return decode(data, response: response, label: label)
+        case .failure(let error):
+            return failure(error)
+        }
+    }
+
+    /// Makes a conditional GET. A 304 is a success when the request sent a stored ETag.
+    public func conditionalGet<T>(_ path: String, as _: T.Type = T.self,
+                                  previousTag: String? = nil) async -> Result<ApiConditionalGet<T>, ApiFailure>
+    where T: Decodable & Sendable {
+        var request = ApiRequest<T>.get(path)
+        let previous = Self.safeEntityTag(previousTag)
+        request.headers["If-None-Match"] = previous
+        // Our disk snapshot owns the cache and can validate a changed response before adopting it.
+        request.headers["Cache-Control"] = "no-cache"
+        let label = "GET \(UrlRedaction.path(of: path))"
+        switch await exchange(request, label: label) {
+        case .success(let (data, response)):
+            let tag = Self.safeEntityTag(response.value(forHTTPHeaderField: "ETag"))
+            if response.statusCode == 304, previous != nil {
+                return .success(.notModified)
+            }
+            let decoded: ApiResult<T> = decode(data, response: response, label: label)
+            return decoded.map { .modified($0.data, tag: tag) }
+        case .failure(let error):
+            return failure(error)
+        }
+    }
+
+    private func exchange<T>(_ request: ApiRequest<T>, label: String) async
+        -> Result<(Data, HTTPURLResponse), ApiFailure> {
         let urlRequest: URLRequest
         do {
             urlRequest = try await makeURLRequest(request)
         } catch {
-            return failure(ApiFailure(code: .transport, request: label, underlying: "\(error)"))
+            return .failure(ApiFailure(code: .transport, request: label, underlying: "\(error)"))
         }
 
-        let data: Data
-        let response: HTTPURLResponse
         do {
-            (data, response) = try await transport.send(urlRequest)
+            let result = try await transport.send(urlRequest)
+            return .success(result)
         } catch {
-            return failure(Self.transportFailure(error, request: label))
+            return .failure(Self.transportFailure(error, request: label))
         }
+    }
 
+    private func decode<T: Decodable & Sendable>(_ data: Data, response: HTTPURLResponse, label: String) -> ApiResult<T> {
         guard (200..<300).contains(response.statusCode) else {
             let problem = try? ApiJson.decoder().decode(ProblemDetails.self, from: data)
             let isValidation = (response.statusCode == 400 || response.statusCode == 422)
@@ -123,11 +157,19 @@ public struct ApiClient: Sendable {
         return urlRequest
     }
 
-    private func failure<T>(_ failure: ApiFailure) -> ApiResult<T> {
+    private func failure<T>(_ failure: ApiFailure) -> Result<T, ApiFailure> {
         if failure.code != .cancelled {
             log?.warning("\(failure.request) → \(failure.code.rawValue) \(failure.status) \(failure.kind.rawValue)")
         }
         return .failure(failure)
+    }
+
+    private static func safeEntityTag(_ value: String?) -> String? {
+        guard let value, value.utf8.count <= 1024 else { return nil }
+        let tag = value.hasPrefix("W/") ? value.dropFirst(2) : value[...]
+        guard tag.count >= 2, tag.first == "\"", tag.last == "\"",
+              tag.dropFirst().dropLast().utf8.allSatisfy({ (33...126).contains($0) && $0 != 34 }) else { return nil }
+        return value
     }
 
     static func transportFailure(_ error: any Error, request: String) -> ApiFailure {
@@ -141,6 +183,12 @@ public struct ApiClient: Sendable {
         }
         return ApiFailure(code: .transport, request: request, underlying: "\(error)")
     }
+}
+
+/// The successful outcomes of a conditional GET.
+public enum ApiConditionalGet<Value: Sendable>: Sendable {
+    case notModified
+    case modified(Value, tag: String?)
 }
 
 /// The be sdk's success envelope on the wire.

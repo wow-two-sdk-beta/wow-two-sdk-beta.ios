@@ -1,5 +1,9 @@
 # ApiClient
 
+Use `conditionalGet(_:as:previousTag:)` to receive `.notModified` for a 304 after sending an ETag. A normal
+`send` retains its existing status and error handling. `CachedResource` loads the last validated snapshot from disk
+and keeps it through failed requests or validation. Call `refresh(validate:)` to atomically adopt the replacement.
+
 Calls a be sdk host and returns a typed result: the success envelope's `data`, or a display-safe failure.
 
 Source: [ApiClient.swift](ApiClient.swift), [ApiRequest.swift](ApiRequest.swift), [ApiFailure.swift](ApiFailure.swift), [ProblemDetails.swift](ProblemDetails.swift), [FieldError.swift](FieldError.swift), [ApiJson.swift](ApiJson.swift), [HttpTransport.swift](HttpTransport.swift), [JsonValue.swift](JsonValue.swift).
