@@ -16,10 +16,19 @@ public enum AppEnvironment: String, Sendable, CaseIterable, Codable {
 public struct AppConfigKeys: Sendable, Hashable {
     public var environment: String
     public var apiBaseURL: String
+    public var identityAuthority: String
+    public var identityClientID: String
 
-    public init(environment: String = "WoW2Environment", apiBaseURL: String = "WoW2ApiBaseURL") {
+    public init(
+        environment: String = "WoW2Environment",
+        apiBaseURL: String = "WoW2ApiBaseURL",
+        identityAuthority: String = "WoW2IdentityAuthority",
+        identityClientID: String = "WoW2IdentityClientId"
+    ) {
         self.environment = environment
         self.apiBaseURL = apiBaseURL
+        self.identityAuthority = identityAuthority
+        self.identityClientID = identityClientID
     }
 
     public static let standard = AppConfigKeys()
@@ -35,6 +44,8 @@ public enum AppConfigError: Error, Sendable, Equatable, CustomStringConvertible 
     case unknownEnvironment(String)
     /// The base URL is not an absolute `http` or `https` URL.
     case invalidURL(key: String, value: String)
+    /// Identity uses an absolute HTTPS issuer with no user information, query or fragment.
+    case invalidIdentityAuthority(key: String)
 
     public var description: String {
         switch self {
@@ -42,6 +53,7 @@ public enum AppConfigError: Error, Sendable, Equatable, CustomStringConvertible 
         case .unresolved(let key, let value): "\(key) is \(value): the xcconfig does not define that build setting"
         case .unknownEnvironment(let name): "Unknown environment \(name); expected local, dev or prod"
         case .invalidURL(let key, let value): "\(key) is not an absolute http(s) URL: \(value)"
+        case .invalidIdentityAuthority(let key): "\(key) is not an absolute HTTPS issuer"
         }
     }
 }
@@ -57,10 +69,14 @@ public enum AppConfigError: Error, Sendable, Equatable, CustomStringConvertible 
 public struct AppConfig: Sendable, Hashable {
     public var environment: AppEnvironment
     public var apiBaseURL: URL
+    public var identityAuthority: URL?
+    public var identityClientID: String?
 
-    public init(environment: AppEnvironment, apiBaseURL: URL) {
+    public init(environment: AppEnvironment, apiBaseURL: URL, identityAuthority: URL? = nil, identityClientID: String? = nil) {
         self.environment = environment
         self.apiBaseURL = apiBaseURL
+        self.identityAuthority = identityAuthority
+        self.identityClientID = identityClientID
     }
 
     /// Reads the configuration from `info` — the main bundle's Info.plist by default.
@@ -79,13 +95,32 @@ public struct AppConfig: Sendable, Hashable {
         else {
             throw .invalidURL(key: keys.apiBaseURL, value: urlText)
         }
-        return AppConfig(environment: environment, apiBaseURL: url)
+        let authority = try optionalValue(keys.identityAuthority, in: info)
+        let clientID = try optionalValue(keys.identityClientID, in: info)
+        let issuer: URL?
+        if let authority {
+            guard let parsed = URL(string: authority), parsed.scheme?.lowercased() == "https",
+                  parsed.host()?.isEmpty == false, parsed.user() == nil, parsed.password() == nil,
+                  parsed.query() == nil, parsed.fragment() == nil
+            else { throw .invalidIdentityAuthority(key: keys.identityAuthority) }
+            guard clientID != nil else { throw .missing(key: keys.identityClientID) }
+            issuer = parsed
+        } else {
+            guard clientID == nil else { throw .missing(key: keys.identityAuthority) }
+            issuer = nil
+        }
+        return AppConfig(environment: environment, apiBaseURL: url, identityAuthority: issuer, identityClientID: clientID)
     }
 
     private static func value(_ key: String, in info: [String: Any]) throws(AppConfigError) -> String {
-        guard let raw = info[key] as? String else { throw .missing(key: key) }
+        guard let resolved = try optionalValue(key, in: info) else { throw .missing(key: key) }
+        return resolved
+    }
+
+    private static func optionalValue(_ key: String, in info: [String: Any]) throws(AppConfigError) -> String? {
+        guard let raw = info[key] as? String else { return nil }
         let trimmed = raw.trimmingCharacters(in: .whitespacesAndNewlines)
-        if trimmed.isEmpty { throw .missing(key: key) }
+        if trimmed.isEmpty { return nil }
         if trimmed.contains("$(") { throw .unresolved(key: key, value: trimmed) }
         return trimmed
     }

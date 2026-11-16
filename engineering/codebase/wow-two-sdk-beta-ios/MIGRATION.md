@@ -1,9 +1,18 @@
 # WoW2SdkBetaIos migration
 
-*Last updated: 2026-11-16*
+*Last updated: 2026-11-17*
 
 Consumer-facing changes per tagged version, newest first. Pin `exact:`; every tag may break, and its entry here says
 how to move.
+
+## 0.0.7 — Native sign-in and sequence video
+
+- Add `WoW2IosAuth` to a native app to open the system sign-in browser, store verified credentials in Keychain and
+  supply a bearer header to the app's trusted API. Configure `WoW2IdentityAuthority` and `WoW2IdentityClientId`
+  together. The issuer matches discovery exactly, including its trailing slash when present. Exhaustive switches
+  over `AppConfigError` handle the new `.invalidIdentityAuthority` case. [Spec](src/auth/AuthSession.spec.md)
+- `StillVideoWriter` encodes a sequence of still images as a 30 fps H.264 MP4. `PhotoLibrary.saveVideo(at:)` adds it
+  to Photos under the existing add-only permission.
 
 ## 0.0.6 — Camera Control and AirPods motion
 

@@ -38,6 +38,7 @@ let package = Package(
         // Camera and Photos: imported explicitly, never through the umbrella, so an app without a camera links
         // no AVKit or Photos and needs no camera or photo-library purpose strings.
         .library(name: "WoW2IosCapture", targets: ["WoW2IosCapture"]),
+        .library(name: "WoW2IosAuth", targets: ["WoW2IosAuth"]),
     ],
     targets: [
         // Layers: foundation (no UI) · theme (tokens) · presentation (components) · umbrella re-export.
@@ -45,6 +46,7 @@ let package = Package(
         target("WoW2IosTheme", "src/theme"),
         target("WoW2IosPresentation", "src/presentation", dependencies: ["WoW2IosTheme"]),
         target("WoW2IosCapture", "src/capture"),
+        target("WoW2IosAuth", "src/auth", dependencies: ["WoW2IosFoundation"]),
         target("WoW2Ios", "src/umbrella", dependencies: ["WoW2IosFoundation", "WoW2IosTheme", "WoW2IosPresentation"]),
 
         // Sandboxes: built and tested, never a product (sdk-structure.md § Apps).
@@ -57,6 +59,7 @@ let package = Package(
             dependencies: ["WoW2IosFoundation", "WoW2IosTestSupport"]
         ),
         testTarget("WoW2IosCaptureTests", "tests/unit/capture", dependencies: ["WoW2IosCapture"]),
+        testTarget("WoW2IosAuthTests", "tests/unit/auth", dependencies: ["WoW2IosAuth", "WoW2IosFoundation", "WoW2IosTestSupport"]),
         testTarget("WoW2IosThemeTests", "tests/unit/theme", dependencies: ["WoW2IosTheme"]),
         testTarget(
             "WoW2IosPresentationTests", "tests/unit/presentation",
