@@ -27,6 +27,7 @@ Public import: `import WoW2IosCapture` (never through the `WoW2Ios` umbrella). f
 | `ImportedPhoto` | the `Transferable` a `PhotosPicker` item loads |
 | `JpegExport.jpegData(from:quality:)` | JPEG bytes, or nil |
 | `PhotoLibrary.save(_:)` | adds encoded image bytes to Photos |
+| `PhotoLibrary.saveVideo(at:)` | adds a local video file under the same add-only permission |
 | `UIImage.uprightImage(maxDimension:)` | an upright, capped bitmap |
 
 ## Verification
