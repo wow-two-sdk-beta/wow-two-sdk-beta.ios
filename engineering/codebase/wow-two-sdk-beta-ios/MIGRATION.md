@@ -5,6 +5,11 @@
 Consumer-facing changes per tagged version, newest first. Pin `exact:`; every tag may break, and its entry here says
 how to move.
 
+## 0.0.6 — Camera Control and AirPods motion
+
+- `CaptureControls` adds system zoom, discrete sliders and index pickers on iOS 18 and later. Apply and remove them on the capture session's serial queue. [Spec](src/capture/controls/CaptureControls.spec.md)
+- `HeadphoneGestures` delivers nod and shake events from motion-capable headphones. Add a localized `NSMotionUsageDescription` to the app's Info.plist before starting motion updates. [Spec](src/capture/headGestures/HeadGestures.spec.md)
+
 ## 0.0.5 — Long selection values
 
 - `SelectField` places values that do not fit beside their label underneath it, with up to two lines. Accessibility text sizes always use the stacked layout. No call sites change.
