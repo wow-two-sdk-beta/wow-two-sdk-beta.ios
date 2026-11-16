@@ -5,9 +5,10 @@
 Consumer-facing changes per tagged version, newest first. Pin `exact:`; every tag may break, and its entry here says
 how to move.
 
-## 0.0.4 — Leading views
+## 0.0.4 — Leading views and shutter observations
 
 - `ListGroupItem` and `ChoiceField` accept a decorative `leading:` view. Existing symbol initializers keep their layout. The square slot follows the new `ThemeSizes.listRowLeading` token, which defaults to 30 pt.
+- `hardwareShutter(isEnabled:onPress:onEvent:)` reports each phase the system delivers, including ignored phases, via `HardwareShutterEvent`. The two-argument modifier remains available.
 
 ## 0.0.3 — Pose Coach extractions
 

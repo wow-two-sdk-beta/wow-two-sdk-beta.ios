@@ -2,7 +2,8 @@
 
 Takes a photo from a hardware press — a volume button, Camera Control, an AirPods stem click (iOS 26).
 
-Source: [HardwareShutter.swift](HardwareShutter.swift), [HardwareShutterPolicy.swift](HardwareShutterPolicy.swift).
+Source: [HardwareShutter.swift](HardwareShutter.swift), [HardwareShutterPolicy.swift](HardwareShutterPolicy.swift),
+[HardwareShutterEvent.swift](HardwareShutterEvent.swift).
 Public import: `import WoW2IosCapture` (never through the `WoW2Ios` umbrella). fe sdk: none.
 
 ## Contract
@@ -14,12 +15,14 @@ Public import: `import WoW2IosCapture` (never through the `WoW2Ios` umbrella). f
 - `HardwareShutterPolicy` is pure: `isActive` decides when to attach, `action(for:…)` what one press does.
 - A press acts on release (`ended`), like the system Camera; `began` and `cancelled` are ignored.
 - A press while the self-timer countdown is armed captures now and cancels the countdown.
+- An optional `onEvent` observer receives every event the system delivers to the handler, even if the press is ignored. Below iOS 26, AirPods clicks are not identified.
 
 ## API
 
 | Member | Does |
 |---|---|
 | `View.hardwareShutter(isEnabled:onPress:)` | routes hardware presses to `onPress` while enabled |
+| `View.hardwareShutter(isEnabled:onPress:onEvent:)` | also reports phase, AirPods source, accepted capture and actual sound playback |
 | `HardwareShutterPolicy.isActive(isEnabled:cameraReady:screenActive:)` | whether to attach the handler |
 | `HardwareShutterPolicy.action(for:cameraReady:acceptsPhoto:countdownArmed:)` | `ignore` · `capture` · `captureCancellingCountdown` |
 | `HardwareShutterPolicy.Phase` | `began` · `ended` · `cancelled` |
@@ -27,4 +30,5 @@ Public import: `import WoW2IosCapture` (never through the `WoW2Ios` umbrella). f
 ## Verification
 
 - [HardwareShutterPolicyTests.swift](../../../tests/unit/capture/shutter/HardwareShutterPolicyTests.swift).
+- [HardwareShutterEventTests.swift](../../../tests/unit/capture/shutter/HardwareShutterEventTests.swift) covers ignored phases, sound eligibility and playback results.
 - The modifier needs a device with hardware buttons; it is checked in the consuming app.
