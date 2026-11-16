@@ -36,6 +36,7 @@ public struct ChoiceField: View {
     private let title: Text
     private let subtitle: Text?
     private let systemImage: String?
+    private let leading: AnyView?
     private let isSelected: Bool
     private let action: @MainActor () -> Void
 
@@ -66,6 +67,35 @@ public struct ChoiceField: View {
         self.init(
             text: Text(title), subtitle: subtitle.map { Text(verbatim: $0) }, systemImage: systemImage,
             isSelected: isSelected, action: action
+        )
+    }
+
+    /// Shows a decorative view in the leading slot and keeps the native selected trait.
+    public init<Leading: View>(
+        _ title: LocalizedStringKey,
+        subtitle: LocalizedStringKey? = nil,
+        leading: Leading,
+        isSelected: Bool,
+        action: @escaping @MainActor () -> Void
+    ) {
+        self.init(
+            text: Text(title), subtitle: subtitle.map { Text($0) }, systemImage: nil, leading: AnyView(leading),
+            isSelected: isSelected, action: action
+        )
+    }
+
+    /// Renders `title` and `subtitle` verbatim.
+    @_disfavoredOverload
+    public init<Title: StringProtocol, Leading: View>(
+        _ title: Title,
+        subtitle: String? = nil,
+        leading: Leading,
+        isSelected: Bool,
+        action: @escaping @MainActor () -> Void
+    ) {
+        self.init(
+            text: Text(title), subtitle: subtitle.map { Text(verbatim: $0) }, systemImage: nil,
+            leading: AnyView(leading), isSelected: isSelected, action: action
         )
     }
 
@@ -102,12 +132,14 @@ public struct ChoiceField: View {
         text: Text,
         subtitle: Text?,
         systemImage: String?,
+        leading: AnyView? = nil,
         isSelected: Bool,
         action: @escaping @MainActor () -> Void
     ) {
         self.title = text
         self.subtitle = subtitle
         self.systemImage = systemImage
+        self.leading = leading
         self.isSelected = isSelected
         self.action = action
     }
@@ -115,7 +147,7 @@ public struct ChoiceField: View {
     public var body: some View {
         Button(action: action) {
             HStack(spacing: theme.spacing.md) {
-                RowLabel(title: title, description: subtitle, systemImage: systemImage)
+                RowLabel(title: title, description: subtitle, systemImage: systemImage, leading: leading)
                     .layoutPriority(1)
                 Spacer(minLength: theme.spacing.sm)
             }

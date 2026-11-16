@@ -1,9 +1,13 @@
 # WoW2SdkBetaIos migration
 
-*Last updated: 2026-11-10*
+*Last updated: 2026-11-16*
 
 Consumer-facing changes per tagged version, newest first. Pin `exact:`; every tag may break, and its entry here says
 how to move.
+
+## 0.0.4 — Leading views
+
+- `ListGroupItem` and `ChoiceField` accept a decorative `leading:` view. Existing symbol initializers keep their layout. The square slot follows the new `ThemeSizes.listRowLeading` token, which defaults to 30 pt.
 
 ## 0.0.3 — Pose Coach extractions
 

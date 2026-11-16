@@ -162,6 +162,13 @@ public struct ShowcaseGallery: View {
                 ListGroupItem(String("Version"), systemImage: "info.circle") { Text(verbatim: "0.0.2") }
             }
 
+            ListGroup("People", separator: .inset) {
+                ListGroupItem("Ada Lovelace", leading: Avatar("Ada Lovelace", size: .small))
+                ChoiceField("Grace Hopper", leading: Avatar("Grace Hopper", size: .small), isSelected: true) {}
+            }
+            .wow2Theme(theme.with(id: theme.id) { $0.sizes.avatarSmall = theme.sizes.listRowLeading },
+                        tintsControls: false)
+
             SectionHeader("Feedback") {
                 Button("Toast") { toasts.show("Heads up", message: "A second line.", tone: .info) }
                     .buttonStyle(.theme(.ghost, size: .small))

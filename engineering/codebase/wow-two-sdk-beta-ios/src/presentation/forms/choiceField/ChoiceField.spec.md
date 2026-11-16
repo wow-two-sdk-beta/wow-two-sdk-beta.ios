@@ -9,6 +9,7 @@ Source: [ChoiceField.swift](ChoiceField.swift). Public import: `import WoW2IosPr
 - The look comes from `ChoiceFieldAppearance.resolve(theme:isSelected:isPressed:isEnabled:)` alone.
 - The trailing checkmark is `primary.base` in the semibold `label` role; its slot stays when unselected, so titles never shift.
 - The row shares `ListGroupItem`'s metrics: `RowLabel` (primary-soft icon tile, `label` title, `caption` subtitle) and the row insets, at least 48 pt tall; it reports its title edge for `ListGroup`'s inset separators.
+- The action form accepts a decorative `leading:` view in place of `systemImage` at the same size and inset.
 - The row paints the card fill, darkening to `muted` while pressed, so several sit in a `ListGroup` with separators.
 - VoiceOver reads each row as one button with title and subtitle, and the selected trait; the checkmark is hidden.
 - Disabled dims to `states.disabledOpacity`.
@@ -22,6 +23,7 @@ Source: [ChoiceField.swift](ChoiceField.swift). Public import: `import WoW2IosPr
 | `title` | `LocalizedStringKey` / `StringProtocol` | — | The option's name. |
 | `subtitle` | `LocalizedStringKey?` / `String?` | `nil` | A second, muted line. |
 | `systemImage` | `String?` | `nil` | An SF Symbol in a primary-soft tile. |
+| `leading` | `View` | — | A decorative view in place of the icon (action form). |
 | `isSelected` | `Bool` | — | Shows the checkmark (action form). |
 | `action` | `@MainActor () -> Void` | — | Runs on tap (action form). |
 | `value` | `Value: Hashable` | — | This row's value (binding form). |

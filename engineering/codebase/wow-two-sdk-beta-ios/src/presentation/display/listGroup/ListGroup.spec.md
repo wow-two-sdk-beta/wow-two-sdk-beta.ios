@@ -11,6 +11,7 @@ Source: [ListGroup.swift](ListGroup.swift), [ListGroupItem.swift](ListGroupItem.
 - A child that paints no fill shows the border colour; use `ListGroupItem`, `SwitchField`, `SelectField` or a view with `theme.colors.card`.
 - The title renders upper-case in the eyebrow role with the header trait; the footer wraps.
 - `ListGroupItem` with `action` is one full-row button with a chevron, darkening to `muted` while pressed.
+- A custom `leading:` view replaces the system image tile. Both use `sizes.listRowLeading`, so the row title and inset separator start at the same edge.
 - Every row is at least 48 pt tall.
 - Every `LocalizedStringKey` init has a verbatim twin: the title takes any `StringProtocol`, optional texts take `String?`, and no localization lookup runs — for strings an app resolves itself.
 
@@ -30,9 +31,11 @@ Source: [ListGroup.swift](ListGroup.swift), [ListGroupItem.swift](ListGroupItem.
 | `title` | `LocalizedStringKey` | — | The row's label. |
 | `description` | `LocalizedStringKey?` | `nil` | A second, muted line. |
 | `systemImage` | `String?` | `nil` | An SF Symbol in a primary-soft tile. |
+| `leading` | `View` | — | A decorative view in place of the icon, supplied instead of `systemImage`. |
 | `action` | `(@MainActor () -> Void)?` | `nil` | Makes the row a button with a chevron. |
 | `trailing` | `@ViewBuilder` | none | A value or control at the end, in the muted label style; one line, shrinking to 80 % before the title wraps. |
 
 ## Verification
 
 - Rendered in the gallery ([RenderTests.swift](../../../../tests/unit/presentation/RenderTests.swift)).
+- [SelectionLayoutTests.swift](../../../../tests/unit/presentation/SelectionLayoutTests.swift) measures the same title inset with an icon and a custom leading view.

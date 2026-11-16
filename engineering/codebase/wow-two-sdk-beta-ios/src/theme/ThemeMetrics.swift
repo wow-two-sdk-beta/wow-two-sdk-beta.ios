@@ -78,6 +78,8 @@ public struct ThemeSizes: Sendable, Hashable {
     public var avatarMedium: CGFloat
     public var avatarLarge: CGFloat
     public var avatarExtraLarge: CGFloat
+    /// The square leading slot in a settings row, whether it holds an icon or a custom view.
+    public var listRowLeading: CGFloat
 
     public init(
         controlSmall: CGFloat = 32,
@@ -88,7 +90,8 @@ public struct ThemeSizes: Sendable, Hashable {
         avatarSmall: CGFloat = 32,
         avatarMedium: CGFloat = 40,
         avatarLarge: CGFloat = 56,
-        avatarExtraLarge: CGFloat = 80
+        avatarExtraLarge: CGFloat = 80,
+        listRowLeading: CGFloat = 30
     ) {
         self.controlSmall = controlSmall
         self.controlMedium = controlMedium
@@ -99,6 +102,7 @@ public struct ThemeSizes: Sendable, Hashable {
         self.avatarMedium = avatarMedium
         self.avatarLarge = avatarLarge
         self.avatarExtraLarge = avatarExtraLarge
+        self.listRowLeading = listRowLeading
     }
 
     public static let standard = ThemeSizes()
