@@ -195,3 +195,57 @@ struct ApiClientTests {
         #expect(sink.records.first?.level == .warning)
     }
 }
+
+extension ApiClientTests {
+    @Test func uploadsFromAFileThroughTheTransport() async throws {
+        let file = FileManager.default.temporaryDirectory.appending(path: "file-api-test-\(UUID().uuidString)")
+        defer { try? FileManager.default.removeItem(at: file) }
+        let content = Data([0, 12, 24, 36])
+        try content.write(to: file)
+        let transport = FileRequestTransport()
+        let client = ApiClient(baseURL: baseURL, transport: transport, headers: { ["Authorization": "Bearer test-token"] })
+        var upload = ApiRequest<UserDto>.upload(.put, "uploads/photo", file: file, contentType: "image/jpeg")
+        upload.headers["X-Content-SHA256"] = "sample"
+
+        let result = try await client.data(upload)
+        let request = try #require(await transport.request)
+        #expect(result.id == "saved")
+        #expect(await transport.fileContent == content)
+        #expect(request.url?.path() == "/v1/uploads/photo")
+        #expect(request.httpMethod == "PUT")
+        #expect(request.value(forHTTPHeaderField: "Authorization") == "Bearer test-token")
+        #expect(request.value(forHTTPHeaderField: "Content-Type") == "image/jpeg")
+        #expect(request.value(forHTTPHeaderField: "X-Content-SHA256") == "sample")
+        #expect(request.httpBody == nil)
+    }
+
+    @Test func existingCustomTransportsDoNotSendFilesAsEmptyBodies() async throws {
+        let transport = StubTransport(.response(status: 204, body: ""))
+        let client = ApiClient(baseURL: baseURL, transport: transport)
+        let upload = ApiRequest<NoContent>.upload(.put, "uploads/photo",
+                                                 file: .temporaryDirectory.appending(path: "pic.heic"),
+                                                 contentType: "image/heic")
+
+        let result = await client.send(upload)
+        guard case .failure(let failure) = result else { Issue.record("A transport without file upload must fail"); return }
+        #expect(failure.code == .transport)
+        #expect(transport.requests.isEmpty)
+    }
+}
+
+private actor FileRequestTransport: HttpTransport {
+    private(set) var request: URLRequest?
+    private(set) var fileContent: Data?
+
+    func send(_ request: URLRequest) async throws -> (Data, HTTPURLResponse) {
+        throw URLError(.unsupportedURL)
+    }
+
+    func upload(_ request: URLRequest, fromFile source: URL) async throws -> (Data, HTTPURLResponse) {
+        self.request = request
+        fileContent = try Data(contentsOf: source)
+        let url = try #require(request.url)
+        let response = try #require(HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil))
+        return (Data(#"{"data":{"id":"saved","name":"Ada"}}"#.utf8), response)
+    }
+}

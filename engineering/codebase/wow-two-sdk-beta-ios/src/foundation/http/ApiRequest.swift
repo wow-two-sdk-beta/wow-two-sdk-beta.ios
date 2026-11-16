@@ -22,6 +22,8 @@ public struct ApiRequest<Response: Decodable & Sendable>: Sendable {
     public var headers: [String: String]
     /// The JSON-encoded body; `nil` sends none.
     public var body: Data?
+    /// A file-body request streams its contents through the transport.
+    public private(set) var fileBody: URL?
     /// Overrides the client's timeout for this request.
     public var timeout: TimeInterval?
 
@@ -47,6 +49,14 @@ public struct ApiRequest<Response: Decodable & Sendable>: Sendable {
 
     public static func delete(_ path: String, as _: Response.Type = Response.self) -> Self {
         Self(method: .delete, path: path)
+    }
+
+    /// Streams a raw file at the relative API path. The caller keeps it available until the request finishes.
+    public static func upload(_ method: HttpMethod, _ path: String, file: URL, contentType: String,
+                              as _: Response.Type = Response.self) -> Self {
+        var request = Self(method: method, path: path, headers: ["Content-Type": contentType])
+        request.fileBody = file
+        return request
     }
 
     /// A request carrying `body` as JSON, encoded with the be sdk's conventions (`ApiJson.encoder`).

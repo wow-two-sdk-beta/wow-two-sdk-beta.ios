@@ -5,6 +5,12 @@
 Consumer-facing changes per tagged version, newest first. Pin `exact:`; every tag may break, and its entry here says
 how to move.
 
+## 0.0.9 — File-backed background uploads
+
+- `ApiRequest.fileBody` sends a file through transports that support streaming. The normal JSON request path remains
+  available. `BackgroundUploads` retains staged files for URLSession, records results on disk, and reconnects to
+  running uploads after a process restart. [Spec](src/foundation/http/BackgroundUploads.spec.md)
+
 ## 0.0.8 — Conditional HTTP resources
 
 - `ApiClient.conditionalGet` sends the previous ETag and distinguishes an unchanged resource from a new response.

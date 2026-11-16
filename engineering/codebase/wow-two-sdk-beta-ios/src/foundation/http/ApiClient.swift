@@ -98,8 +98,11 @@ public struct ApiClient: Sendable {
         }
 
         do {
-            let result = try await transport.send(urlRequest)
-            return .success(result)
+            if let file = request.fileBody {
+                guard file.isFileURL, request.body == nil else { throw URLError(.badURL) }
+                return .success(try await transport.upload(urlRequest, fromFile: file))
+            }
+            return .success(try await transport.send(urlRequest))
         } catch {
             return .failure(Self.transportFailure(error, request: label))
         }
